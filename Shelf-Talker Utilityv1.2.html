@@ -1,0 +1,930 @@
+<!-- Shelf Talker Utility - Browser Edition v1.2 Charlie Dearing - Claude Sonnet 4 via VSCODE Agent - 10.13.2025-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shelf Talker Utility</title>
+    <!-- No external dependencies - fully self-contained for security -->
+    <style>
+        /* Reset and base styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            width: 100%;
+            max-width: 600px;
+            min-height: 500px;
+        }
+
+        /* Header */
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #f0f0f0;
+            padding-bottom: 20px;
+        }
+
+        header h1 {
+            color: #333;
+            font-size: 2.2em;
+            margin-bottom: 8px;
+        }
+
+        header p {
+            color: #666;
+            font-size: 1.1em;
+        }
+
+        .version-badge {
+            background: #17a2b8;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.8em;
+            margin-left: 10px;
+        }
+
+        /* Form styles */
+        .book-form {
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 600;
+            color: #333;
+            font-size: 1em;
+        }
+
+        input[type="text"], textarea {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e1e5e9;
+            border-radius: 8px;
+            font-size: 1em;
+            font-family: inherit;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        input[type="text"]:focus, textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        /* Button styles */
+        .button-group {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-top: 25px;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .btn-search {
+            background: #17a2b8;
+            color: white;
+        }
+
+        .btn-search:hover:not(:disabled) {
+            background: #138496;
+            transform: translateY(-2px);
+        }
+
+        .btn-save {
+            background: #28a745;
+            color: white;
+        }
+
+        .btn-save:hover:not(:disabled) {
+            background: #218838;
+            transform: translateY(-2px);
+        }
+
+        .btn-copy {
+            background: #6f42c1;
+            color: white;
+        }
+
+        .btn-copy:hover:not(:disabled) {
+            background: #5a32a3;
+            transform: translateY(-2px);
+        }
+
+        .btn-clear {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-clear:hover:not(:disabled) {
+            background: #5a6268;
+            transform: translateY(-2px);
+        }
+
+        .btn-export {
+            background: #fd7e14;
+            color: white;
+        }
+
+        .btn-export:hover:not(:disabled) {
+            background: #e8680d;
+            transform: translateY(-2px);
+        }
+
+        /* Search results */
+        .search-results {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 20px;
+            border: 1px solid #dee2e6;
+        }
+
+        .search-results h3 {
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .results-list {
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .result-item {
+            background: white;
+            padding: 12px 16px;
+            margin-bottom: 8px;
+            border-radius: 6px;
+            border: 1px solid #e9ecef;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .result-item:hover {
+            background: #e7f3ff;
+            border-color: #667eea;
+        }
+
+        .result-title {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 4px;
+        }
+
+        .result-author {
+            color: #666;
+            font-size: 0.9em;
+            margin-bottom: 4px;
+        }
+
+        .result-preview {
+            color: #888;
+            font-size: 0.8em;
+            font-style: italic;
+        }
+
+        .delete-btn {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            cursor: pointer;
+            font-size: 12px;
+            display: none;
+        }
+
+        .result-item:hover .delete-btn {
+            display: block;
+        }
+
+        /* Status messages */
+        .status-message {
+            margin-top: 15px;
+            padding: 12px 16px;
+            border-radius: 6px;
+            text-align: center;
+            font-weight: 500;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .status-message.show {
+            opacity: 1;
+        }
+
+        .status-message.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .status-message.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .status-message.info {
+            background: #cce7ff;
+            color: #004085;
+            border: 1px solid #b3d7ff;
+        }
+
+        /* Data management section */
+        .data-management {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #dee2e6;
+        }
+
+        .data-stats {
+            background: #e9ecef;
+            padding: 10px 15px;
+            border-radius: 6px;
+            margin-bottom: 15px;
+            text-align: center;
+            color: #495057;
+            font-size: 0.9em;
+        }
+
+        /* File input styling */
+        .file-input-wrapper {
+            position: relative;
+            overflow: hidden;
+            display: inline-block;
+        }
+
+        .file-input-wrapper input[type=file] {
+            position: absolute;
+            left: -9999px;
+        }
+
+        /* Responsive design */
+        @media (max-width: 600px) {
+            .container {
+                margin: 10px;
+                padding: 20px;
+            }
+            
+            .button-group {
+                flex-direction: column;
+            }
+            
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📚 Shelf Talker Utility</h1>
+            <p>V1.2 Charlie Dearing, &copy; 2025</p>
+        </header>
+
+        <main>
+            <form id="bookForm" class="book-form">
+                <div class="form-group">
+                    <label for="title">Title:</label>
+                    <input type="text" id="title" name="title" placeholder="Enter book title" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="author">Author:</label>
+                    <input type="text" id="author" name="author" placeholder="Enter author name" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="description">Description:</label>
+                    <textarea id="description" name="description" placeholder="Enter shelf talker description" rows="4" required></textarea>
+                </div>
+
+                <div class="button-group">
+                    <button type="button" id="searchBtn" class="btn btn-search">🔍 Search</button>
+                    <button type="button" id="saveBtn" class="btn btn-save">💾 Save</button>
+                    <button type="button" id="copyBtn" class="btn btn-copy">📋 Copy to Clipboard</button>
+                    <button type="button" id="clearBtn" class="btn btn-clear">🗑️ Clear</button>
+                </div>
+            </form>
+
+            <!-- Search results area (initially hidden) -->
+            <div id="searchResults" class="search-results" style="display: none;">
+                <h3>Search Results:</h3>
+                <div id="resultsList" class="results-list"></div>
+            </div>
+
+            <!-- Data management section -->
+            <div class="data-management">
+                <div class="data-stats" id="dataStats">
+                    Database: 0 entries stored
+                </div>
+                <div class="button-group">
+                    <button type="button" id="exportBtn" class="btn btn-export">📤 Export JSON</button>
+                    <button type="button" id="exportDocxBtn" class="btn btn-export">📄 Export Word Doc</button>
+                    <div class="file-input-wrapper">
+                        <button type="button" class="btn btn-export">📥 Import Data</button>
+                        <input type="file" id="importFile" accept=".json,.docx" title="Import JSON data or Word documents">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Status messages -->
+            <div id="statusMessage" class="status-message"></div>
+        </main>
+    </div>
+
+    <script>
+        // Browser Storage Manager
+        class BrowserStorageManager {
+            constructor() {
+                this.storageKey = 'shelfTalkerEntries';
+                this.init();
+            }
+
+            init() {
+                if (!this.isLocalStorageAvailable()) {
+                    this.memoryStorage = [];
+                }
+                this.updateStats();
+            }
+
+            isLocalStorageAvailable() {
+                try {
+                    const test = '__localStorage_test__';
+                    localStorage.setItem(test, test);
+                    localStorage.removeItem(test);
+                    return true;
+                } catch (e) {
+                    return false;
+                }
+            }
+
+            getAllEntries() {
+                if (this.isLocalStorageAvailable()) {
+                    const stored = localStorage.getItem(this.storageKey);
+                    return stored ? JSON.parse(stored) : [];
+                } else {
+                    return this.memoryStorage || [];
+                }
+            }
+
+            saveEntry(entry) {
+                try {
+                    if (!entry || !entry.title || !entry.author || !entry.description) {
+                        throw new Error('Invalid entry: missing required fields');
+                    }
+                    
+                    const entries = this.getAllEntries();
+                    
+                    // Add timestamp and unique ID
+                    entry.id = Date.now() + '-' + Math.random().toString(36).substr(2, 9);
+                    entry.timestamp = new Date().toISOString();
+                    
+                    // Check for duplicates (same title and author)
+                    const existingIndex = entries.findIndex(e => 
+                        e.title.toLowerCase() === entry.title.toLowerCase() && 
+                        e.author.toLowerCase() === entry.author.toLowerCase()
+                    );
+                    
+                    if (existingIndex >= 0) {
+                        // Update existing entry
+                        entries[existingIndex] = { ...entries[existingIndex], ...entry };
+                    } else {
+                        // Add new entry
+                        entries.push(entry);
+                    }
+
+                    this.saveAllEntries(entries);
+                    this.updateStats();
+                    return entry;
+                } catch (error) {
+                    throw error;
+                }
+            }
+
+            saveAllEntries(entries) {
+                try {
+                    if (this.isLocalStorageAvailable()) {
+                        const dataString = JSON.stringify(entries);
+                        localStorage.setItem(this.storageKey, dataString);
+                        
+                        // Verify it was saved
+                        const verification = localStorage.getItem(this.storageKey);
+                        if (!verification) {
+                            throw new Error('Failed to verify localStorage save');
+                        }
+                    } else {
+                        this.memoryStorage = entries;
+                    }
+                } catch (error) {
+                    if (error.name === 'QuotaExceededError') {
+                        throw new Error('Storage quota exceeded. Please export and clear old data.');
+                    } else {
+                        throw new Error('Failed to save data: ' + error.message);
+                    }
+                }
+            }
+
+            searchEntries(query) {
+                const entries = this.getAllEntries();
+                const searchTerm = query.toLowerCase().trim();
+                
+                if (!searchTerm) return [];
+                
+                return entries.filter(entry => {
+                    const titleMatch = entry.title.toLowerCase().includes(searchTerm);
+                    const authorMatch = entry.author.toLowerCase().includes(searchTerm);
+                    
+                    // Word boundary matching for better precision
+                    const titleWordMatch = entry.title.toLowerCase().split(/\s+/).some(word => word.startsWith(searchTerm));
+                    const authorWordMatch = entry.author.toLowerCase().split(/\s+/).some(word => word.startsWith(searchTerm));
+                    
+                    return titleMatch || authorMatch || titleWordMatch || authorWordMatch;
+                });
+            }
+
+            deleteEntry(id) {
+                const entries = this.getAllEntries();
+                const filteredEntries = entries.filter(entry => entry.id !== id);
+                this.saveAllEntries(filteredEntries);
+                this.updateStats();
+            }
+
+            exportData() {
+                const entries = this.getAllEntries();
+                const dataStr = JSON.stringify(entries, null, 2);
+                const dataBlob = new Blob([dataStr], { type: 'application/json' });
+                
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(dataBlob);
+                link.download = `shelf-talker-data-${new Date().toISOString().split('T')[0]}.json`;
+                link.click();
+            }
+
+            importData(jsonData) {
+                try {
+                    const importedEntries = JSON.parse(jsonData);
+                    if (!Array.isArray(importedEntries)) {
+                        throw new Error('Invalid data format');
+                    }
+                    
+                    const existingEntries = this.getAllEntries();
+                    const mergedEntries = [...existingEntries];
+                    
+                    importedEntries.forEach(entry => {
+                        const existingIndex = mergedEntries.findIndex(e => 
+                            e.title.toLowerCase() === entry.title.toLowerCase() && 
+                            e.author.toLowerCase() === entry.author.toLowerCase()
+                        );
+                        
+                        if (existingIndex >= 0) {
+                            // Update existing
+                            mergedEntries[existingIndex] = { ...mergedEntries[existingIndex], ...entry };
+                        } else {
+                            // Add new
+                            if (!entry.id) {
+                                entry.id = Date.now() + '-' + Math.random().toString(36).substr(2, 9);
+                            }
+                            mergedEntries.push(entry);
+                        }
+                    });
+                    
+                    this.saveAllEntries(mergedEntries);
+                    this.updateStats();
+                    return mergedEntries.length - existingEntries.length;
+                } catch (error) {
+                    throw new Error('Failed to import data: ' + error.message);
+                }
+            }
+
+            updateStats() {
+                const entries = this.getAllEntries();
+                const statsElement = document.getElementById('dataStats');
+                if (statsElement) {
+                    statsElement.textContent = `Database: ${entries.length} entries stored`;
+                }
+            }
+        }
+
+        // Initialize storage manager
+        const storage = new BrowserStorageManager();
+
+        // DOM elements
+        const titleInput = document.getElementById('title');
+        const authorInput = document.getElementById('author');
+        const descriptionInput = document.getElementById('description');
+        const searchBtn = document.getElementById('searchBtn');
+        const saveBtn = document.getElementById('saveBtn');
+        const copyBtn = document.getElementById('copyBtn');
+        const clearBtn = document.getElementById('clearBtn');
+        const exportBtn = document.getElementById('exportBtn');
+        const exportDocxBtn = document.getElementById('exportDocxBtn');
+        const importFile = document.getElementById('importFile');
+        const searchResults = document.getElementById('searchResults');
+        const resultsList = document.getElementById('resultsList');
+        const statusMessage = document.getElementById('statusMessage');
+
+        // Initialize the app
+        document.addEventListener('DOMContentLoaded', () => {
+            // Add event listeners
+            searchBtn.addEventListener('click', handleSearch);
+            saveBtn.addEventListener('click', handleSave);
+            copyBtn.addEventListener('click', handleCopy);
+            clearBtn.addEventListener('click', clearForm);
+            exportBtn.addEventListener('click', handleExport);
+            exportDocxBtn.addEventListener('click', handleExportDocx);
+            importFile.addEventListener('change', handleImport);
+            
+            // Add Enter key support for search
+            titleInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') handleSearch();
+            });
+            
+            authorInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') handleSearch();
+            });
+
+            // Import file input trigger
+            document.querySelector('.file-input-wrapper .btn').addEventListener('click', () => {
+                importFile.click();
+            });
+        });
+
+        // Handle search functionality
+        function handleSearch() {
+            const title = titleInput.value.trim();
+            const author = authorInput.value.trim();
+            
+            if (!title && !author) {
+                showStatus('Please enter a title or author to search', 'error');
+                return;
+            }
+            
+            try {
+                showStatus('Searching...', 'info');
+                
+                const searchTerm = title || author;
+                const results = storage.searchEntries(searchTerm);
+                
+                displaySearchResults(results);
+                
+                if (results.length === 0) {
+                    showStatus('No matching titles found', 'info');
+                } else {
+                    showStatus(`Found ${results.length} match(es)`, 'success');
+                }
+                
+            } catch (error) {
+                showStatus('Search failed. Please try again.', 'error');
+            }
+        }
+
+        // Handle save functionality
+        function handleSave() {
+            const title = titleInput.value.trim();
+            const author = authorInput.value.trim();
+            const description = descriptionInput.value.trim();
+            
+            if (!title || !author || !description) {
+                showStatus('Please fill in all fields before saving', 'error');
+                return;
+            }
+            
+            try {
+                showStatus('Saving...', 'info');
+                
+                const entry = {
+                    title,
+                    author,
+                    description
+                };
+                
+                storage.saveEntry(entry);
+                showStatus('Entry saved successfully!', 'success');
+                
+                // Clear the form after successful save
+                setTimeout(() => {
+                    clearForm();
+                }, 1500);
+                
+            } catch (error) {
+                showStatus('Save failed: ' + error.message, 'error');
+            }
+        }
+
+        // Handle copy to clipboard functionality
+        async function handleCopy() {
+            const title = titleInput.value.trim();
+            const author = authorInput.value.trim();
+            const description = descriptionInput.value.trim();
+            
+            if (!title && !author && !description) {
+                showStatus('No content to copy', 'error');
+                return;
+            }
+            
+            try {
+                const content = `Title: ${title}\nAuthor: ${author}\nDescription: ${description}`;
+                
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    await navigator.clipboard.writeText(content);
+                    showStatus('Copied to clipboard!', 'success');
+                } else {
+                    // Fallback for older browsers
+                    const textArea = document.createElement('textarea');
+                    textArea.value = content;
+                    document.body.appendChild(textArea);
+                    textArea.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(textArea);
+                    showStatus('Copied to clipboard!', 'success');
+                }
+                
+            } catch (error) {
+                showStatus('Copy failed. Please try again.', 'error');
+            }
+        }
+
+        // Handle export functionality
+        function handleExport() {
+            try {
+                storage.exportData();
+                showStatus('Data exported successfully!', 'success');
+            } catch (error) {
+                showStatus('Export failed. Please try again.', 'error');
+            }
+        }
+
+        // HTML-based Word document export - secure and self-contained
+        function handleExportDocx() {
+            try {
+                console.log('Using HTML fallback method');
+                showStatus('Creating HTML document (opens in Word)...', 'info');
+                
+                const entries = storage.getAllEntries();
+                if (entries.length === 0) {
+                    showStatus('No entries to export', 'error');
+                    return;
+                }
+
+                // Create HTML content that Word can open
+                const htmlContent = `
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Shelf Talker Descriptions</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 1in; }
+        h1 { text-align: center; color: #2E74B5; margin-bottom: 20px; }
+        .date { text-align: center; margin-bottom: 30px; color: #666; }
+        table { width: 100%; border-collapse: collapse; margin-bottom: 30px; }
+        th { background-color: #E7E6E6; font-weight: bold; padding: 12px; border: 2px solid #333; font-size: 14pt; }
+        td { padding: 15px; border: 1px solid #666; vertical-align: top; min-height: 1in; }
+        .title { font-weight: bold; font-size: 13pt; }
+        .author { font-style: italic; font-size: 12pt; }
+        .description { font-size: 11pt; line-height: 1.3; }
+        .instructions { margin-top: 30px; font-size: 12pt; }
+        .instructions h3 { color: #2E74B5; }
+        .instructions li { margin-bottom: 8px; }
+        @media print {
+            body { margin: 0.5in; }
+            @page { size: landscape; }
+        }
+    </style>
+</head>
+<body>
+    <h1>Shelf Talker Descriptions</h1>
+    <div class="date">Generated on ${new Date().toLocaleDateString()}</div>
+    
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 30%;">TITLE</th>
+                <th style="width: 25%;">AUTHOR</th>
+                <th style="width: 45%;">DESCRIPTION</th>
+            </tr>
+        </thead>
+        <tbody>
+            ${entries.map(entry => `
+                <tr>
+                    <td class="title">${escapeHtml(entry.title)}</td>
+                    <td class="author">${escapeHtml(entry.author)}</td>
+                    <td class="description">${escapeHtml(entry.description)}</td>
+                </tr>
+            `).join('')}
+        </tbody>
+    </table>
+    
+    <div class="instructions">
+        <h3>Printing Instructions:</h3>
+        <ul>
+            <li>This document is optimized for landscape orientation</li>
+            <li>Each row is sized for easy cutting along the table borders</li>
+            <li>Use the borders as cutting guidelines for precise shelf talkers</li>
+            <li>To convert to Word: Open this file in Microsoft Word and save as .docx</li>
+        </ul>
+    </div>
+</body>
+</html>`;
+
+                // Create blob and download
+                const blob = new Blob([htmlContent], { type: 'text/html' });
+                const fileName = `shelf-talker-descriptions-${new Date().toISOString().split('T')[0]}.html`;
+                
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(blob);
+                link.download = fileName;
+                link.click();
+                
+                showStatus(`HTML document exported: ${fileName} (can be opened in Word)`, 'success');
+                console.log('HTML fallback export completed');
+                
+            } catch (error) {
+                console.error('HTML Export error:', error);
+                showStatus('Export failed: ' + error.message, 'error');
+            }
+        }
+
+        // Handle import functionality (JSON and DOCX)
+        function handleImport(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            const fileName = file.name.toLowerCase();
+            
+            if (fileName.endsWith('.json')) {
+                // Handle JSON import
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    try {
+                        const importedCount = storage.importData(e.target.result);
+                        showStatus(`Successfully imported ${importedCount} new entries from JSON!`, 'success');
+                        searchResults.style.display = 'none';
+                    } catch (error) {
+                        showStatus('JSON import failed: ' + error.message, 'error');
+                    }
+                };
+                reader.readAsText(file);
+                
+            } else if (fileName.endsWith('.docx')) {
+                // Handle DOCX import
+                handleImportDocx(file);
+                
+            } else {
+                showStatus('Please select a .json or .docx file', 'error');
+            }
+        }
+
+        // Handle .docx import functionality
+        async function handleImportDocx(file) {
+            try {
+                showStatus('Reading Word document...', 'info');
+                
+                // Note: Full DOCX parsing requires additional libraries
+                // For now, we'll show instructions for manual import
+                const message = `DOCX Import Instructions:
+                
+1. Open your Word document
+2. Copy the table contents (Ctrl+A, then Ctrl+C)
+3. Paste into a text editor
+4. Format as: Title|Author|Description (one per line)
+5. Save as .txt file and manually enter data
+                
+Full DOCX parsing will be added in the next update!`;
+                
+                alert(message);
+                showStatus('DOCX import instructions shown - manual entry required for now', 'info');
+                
+            } catch (error) {
+                showStatus('DOCX import failed: ' + error.message, 'error');
+            }
+        }
+
+        // Display search results
+        function displaySearchResults(results) {
+            if (results.length === 0) {
+                searchResults.style.display = 'none';
+                return;
+            }
+            
+            resultsList.innerHTML = '';
+            
+            results.forEach((result, index) => {
+                const resultItem = document.createElement('div');
+                resultItem.className = 'result-item';
+                resultItem.innerHTML = `
+                    <div class="result-title">${escapeHtml(result.title)}</div>
+                    <div class="result-author">by ${escapeHtml(result.author)}</div>
+                    <div class="result-preview">${escapeHtml(result.description.substring(0, 80))}${result.description.length > 80 ? '...' : ''}</div>
+                    <button class="delete-btn" onclick="deleteEntry('${result.id}')" title="Delete entry">×</button>
+                `;
+                
+                // Add click handler to populate form with selected result
+                resultItem.addEventListener('click', (e) => {
+                    // Don't trigger if delete button was clicked
+                    if (e.target.className === 'delete-btn') return;
+                    
+                    titleInput.value = result.title;
+                    authorInput.value = result.author;
+                    descriptionInput.value = result.description;
+                    searchResults.style.display = 'none';
+                    showStatus('Entry loaded', 'success');
+                });
+                
+                resultsList.appendChild(resultItem);
+            });
+            
+            searchResults.style.display = 'block';
+        }
+
+        // Delete entry function
+        function deleteEntry(id) {
+            if (confirm('Are you sure you want to delete this entry?')) {
+                storage.deleteEntry(id);
+                showStatus('Entry deleted successfully', 'success');
+                // Refresh search results
+                handleSearch();
+            }
+        }
+
+        // Utility functions
+        function showStatus(message, type = 'info') {
+            statusMessage.textContent = message;
+            statusMessage.className = `status-message show ${type}`;
+            
+            // Hide after 3 seconds
+            setTimeout(() => {
+                statusMessage.classList.remove('show');
+            }, 3000);
+        }
+
+        function clearForm() {
+            titleInput.value = '';
+            authorInput.value = '';
+            descriptionInput.value = '';
+            searchResults.style.display = 'none';
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+    </script>
+</body>
+</html>
