@@ -1,19 +1,19 @@
 # Copilot Instructions: VIbrid Coding Methodology Project
 
 ## 🎯 Project Overview
-This is a **Shelf Talker Utility** developed using **VIbrid Coding** methodology - a hybrid approach combining rapid "vibe coding" with structured expert practices. The utility manages book shelf talker descriptions in corporate retail environments with zero-installation requirements.
+This is a **Shelf Talker Utility** developed using **Vibrid Coding** methodology - a hybrid approach combining rapid "vibe coding" with structured expert practices. The utility manages book shelf talker descriptions in corporate retail environments with zero-installation requirements.
 
-## 📋 VIbrid Coding Methodology (REQUIRED)
-When working on this project, you MUST follow VIbrid Coding principles:
+## 📋 Vibrid Coding Methodology (REQUIRED)
+When working on this project, you MUST follow Vibrid Coding principles:
 
-### Core VIbrid Principles
+### Core Vibrid Principles
 1. **Rapid Quality Delivery**: Speed of vibe coding + quality of expert development
 2. **Adaptive Problem Solving**: Pivot seamlessly when constraints are discovered
 3. **User-Centric Development**: Features driven by actual user needs, not assumptions
 4. **Security-First Approach**: Corporate compliance and zero-dependency design
 5. **Documentation Parallel Development**: Update docs throughout development, not after
 
-### VIbrid Development Workflow
+### Vibrid Development Workflow
 - **30-60 minute iteration cycles** with validation at each step
 - **Immediate constraint adaptation** (e.g., Electron → Browser when installation restricted)
 - **Feature enhancement through user feedback** (JSON export → Word document generation)
