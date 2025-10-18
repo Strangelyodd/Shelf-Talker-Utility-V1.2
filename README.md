@@ -1,8 +1,10 @@
-# Shelf Talker Utility - Browser Edition
+# Shelf Talker Utility - Browser Edition v1.4
 
 ## 🌐 **Zero-Installation Solution for Retail Environments!**
 
 This is a **browser-compatible version** that runs without any software installation - perfect for corporate environments with restricted software policies. Specifically designed for bookstore and retail staff who need to manage shelf talker descriptions efficiently.
+
+**🆕 Version 1.4 Enhanced Features:** Duplicate Detection • Alphabetization • XML Support • Database Organization
 
 ## ✅ **Core Features**
 
@@ -14,12 +16,21 @@ This is a **browser-compatible version** that runs without any software installa
 - **📱 Responsive Design**: Works on desktop, tablet, and mobile devices
 - **🔒 Secure & Offline**: All data stays on the local computer, no network required
 
+## 🆕 **Enhanced v1.4 Features**
+
+- **🛡️ Duplicate Detection**: Prevents duplicate entries with user confirmation dialog
+- **📝 Smart Defaults**: Auto-sets description to "None" when only title/author provided
+- **📚 Library Alphabetization**: Sorts ignoring "The", "A", "An" articles for proper library order
+- **📊 XML Import/Export**: Excel-readable XML format for seamless data exchange
+- **🗂️ Database Organization**: Sort by title, author, date; view all entries with timestamps
+
 ## 📄 **Advanced File Features**
 
 - **📤 JSON Export/Import**: Backup and restore your complete database
-- **📄 Word Document Export**: Professional .docx files with table formatting
-- **✂️ Print-Ready Layouts**: Optimized for cutting and production use
-- **📊 Human-Readable Formats**: Easy to review, edit, and share with team
+- **📊 XML Export/Import**: Excel-compatible format for data exchange and analysis
+- **📄 Word Document Export**: Professional HTML tables optimized for cutting and printing
+- **✂️ Print-Ready Layouts**: Alphabetized output optimized for production use
+- **� Database Management**: Sort, filter, and organize entries within the application
 
 ## 🚀 **How to Use**
 
@@ -45,25 +56,35 @@ This is a **browser-compatible version** that runs without any software installa
 4. **Click on any result** to load into form automatically
 5. **Copy to clipboard** if needed for immediate use
 
-### ➕ **Adding New Entries** 
+### ➕ **Adding New Entries (Enhanced v1.4)** 
 1. **Search first** to check for existing entries and avoid duplicates
-2. **If "No matching titles found"**, fill in all three fields:
-   - **Title**: "This Wild Earth"
-   - **Author**: "Author Name" 
-   - **Description**: Your complete shelf talker text
-3. **Click Save** to store permanently in database
-4. **Entry becomes immediately searchable** for future use
+2. **If "No matching titles found"**, fill in required fields:
+   - **Title**: "This Wild Earth" (required)
+   - **Author**: "Author Name" (required)
+   - **Description**: Your complete shelf talker text (optional - will auto-set to "None")
+3. **Duplicate Detection**: If entry exists, system asks for confirmation before updating
+4. **Click Save** to store permanently in database
+5. **Entry becomes immediately searchable** for future use
 
-### 📁 **Data Management**
-- **📤 Export JSON**: Download complete database backup
-- **📄 Export Word Doc**: Create formatted document for printing/cutting
-- **📥 Import JSON**: Restore or merge data from backup files
+### 🗂️ **Database Organization (New in v1.4)**
+- **📚 Sort by Title**: Library-style alphabetization (ignores "The", "A", "An")
+- **👤 Sort by Author**: Alphabetical by author name (A-Z)
+- **📅 Sort by Date**: Chronological by entry creation (newest first)
+- **📋 Show All Entries**: View complete database with timestamps and previews
+- **🔍 Enhanced Results**: Click any entry to load into form for editing
+
+### 📁 **Data Management (Enhanced v1.4)**
+- **📤 Export JSON**: Download complete database backup (alphabetized)
+- **� Export XML**: Excel-compatible format for data analysis and sharing
+- **📄 Export HTML**: Create formatted document for printing/cutting (alphabetized)
+- **📥 Import Data**: Restore or merge from JSON, XML, or Word documents
 - **🗑️ Delete Entries**: Remove outdated entries (with confirmation)
-- **🔄 Update Entries**: Save over existing entries with same title/author
+- **🔄 Smart Updates**: Duplicate detection prevents accidental overwrites
 - **🗃️ Clear Form**: Reset fields to start fresh
 
-### 📄 **Word Document Features**
+### 📄 **Export Document Features (Enhanced v1.4)**
 - **📋 Table Format**: Professional layout with Title | Author | Description columns
+- **📚 Library Sorting**: Proper alphabetization ignoring articles ("The", "A", "An")
 - **📏 Production Ready**: Each row sized for easy cutting (1+ inch height)
 - **✂️ Cut Guidelines**: Table borders serve as precise cutting lines
 - **🖨️ Print Optimized**: Best results with landscape orientation
@@ -72,14 +93,16 @@ This is a **browser-compatible version** that runs without any software installa
 ## 🛠 **Technical Details**
 
 ### Browser Compatibility
-- **✅ Chrome/Edge**: Full support
-- **✅ Firefox**: Full support
-- **✅ Safari**: Full support
-- **✅ Internet Explorer 11**: Basic support (no import/export)
+- **✅ Chrome/Edge**: Full support for all v1.4 features
+- **✅ Firefox**: Full support for all v1.4 features
+- **✅ Safari**: Full support for all v1.4 features
+- **✅ Internet Explorer 11**: Basic support (limited import/export)
 
-### Data Storage
+### Data Storage (Enhanced v1.4)
 - **Browser Storage**: Uses localStorage (5-10MB typical limit)
-- **Backup Format**: JSON files (human-readable)
+- **Backup Formats**: JSON (human-readable), XML (Excel-compatible)
+- **Alphabetization**: Library-style sorting built into all exports
+- **Duplicate Prevention**: Smart detection prevents data corruption
 - **Persistence**: Data survives browser restarts
 - **Privacy**: All data stays on local computer
 
@@ -88,11 +111,12 @@ This is a **browser-compatible version** that runs without any software installa
 - **No External Dependencies**: Self-contained single file
 - **No Personal Data Collection**: Zero tracking or analytics
 - **Corporate Firewall Friendly**: No blocked resources
+- **XML Security**: Proper escaping prevents injection attacks
 
 ## 🔧 **Deployment Options**
 
 ### 💼 **Corporate/Retail Environments**
-1. **📧 Email Distribution**: Send `production.html` file via email to staff
+1. **📧 Email Distribution**: Send `Shelf-Talker Utilityv1.4.html` file via email to staff
 2. **🌐 Intranet Hosting**: Place on internal web server for company-wide access
 3. **📁 Network Drive**: Put on shared folder for team access and collaboration
 4. **💾 USB Distribution**: Copy to USB drives for offline workstation use
@@ -124,32 +148,51 @@ Entries are stored as JSON objects with full metadata:
 }
 ```
 
-### 📄 **Word Document Export Structure**
+### � **XML Export Structure** (New in v1.4)
+Excel-compatible XML format for data exchange:
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<ShelfTalkers>
+  <Entry>
+    <ID>1697198234567-abc123def</ID>
+    <Title>This Wild Earth</Title>
+    <Author>Jane Author</Author>
+    <Description>A compelling story about environmental conservation...</Description>
+    <Timestamp>2024-10-13T15:30:45.123Z</Timestamp>
+  </Entry>
+</ShelfTalkers>
+```
+
+### 📄 **HTML Document Export Structure** (Enhanced v1.4)
 Professional table format optimized for shelf talker production:
 
 | TITLE | AUTHOR | DESCRIPTION |
 |-------|--------|-------------|
-| This Wild Earth | Jane Author | A compelling story about environmental conservation... |
-| Next Book Title | Next Author | Description for cutting and printing... |
+| Apple Kid, The | Author A | Description for cutting and printing... |
+| Grapes of Wrath | Author B | Properly sorted ignoring "The" article... |
+| Great Escape, The | Author C | Library-style alphabetization example... |
 
 **Document Features:**
+- **📚 Library Sorting**: Proper alphabetization ignoring articles
 - **📏 Row Height**: Minimum 1 inch for easy cutting
 - **🖨️ Print Settings**: Optimized for landscape orientation  
 - **✂️ Cut Guidelines**: Table borders serve as cutting lines
 - **📝 Instructions**: Printing and production guidance included
 
-### 📤 **Export Formats Available**
-1. **📊 JSON Backup**: Complete database with all metadata
-2. **📄 Word Document**: Print-ready table for production use
-3. **📋 Clipboard Copy**: Individual entries formatted for immediate use
+### 📤 **Export Formats Available** (Enhanced v1.4)
+1. **📊 JSON Backup**: Complete database with all metadata (alphabetized)
+2. **� XML Export**: Excel-compatible format for data analysis and sharing
+3. **📄 HTML Document**: Print-ready table for production use (alphabetized)
+4. **📋 Clipboard Copy**: Individual entries formatted for immediate use
 
 ## 🆘 **Troubleshooting Guide**
 
-### 💾 **Data Not Saving?**
+### 💾 **Data Not Saving? (Enhanced v1.4)**
 - **Check browser settings**: Ensure cookies/localStorage enabled
 - **Try incognito mode**: Test if extensions are interfering  
 - **Clear browser cache**: Use Ctrl+F5 to force refresh
 - **Storage full**: Export data and clear old entries if needed
+- **Duplicate detection**: Confirm updates when system asks about existing entries
 
 ### 📋 **Copy to Clipboard Issues?**
 - **Modern browsers**: Should work automatically with secure connection
@@ -157,14 +200,16 @@ Professional table format optimized for shelf talker production:
 - **Corporate restrictions**: Some IT policies block clipboard access
 - **Workaround**: Select text manually and use Ctrl+C
 
-### 📁 **File Import/Export Problems?**
+### 📁 **File Import/Export Problems? (Enhanced v1.4)**
 - **JSON files**: Ensure files are valid JSON format
-- **Word documents**: Use recent version of Microsoft Word to open .docx files
+- **XML files**: Must be properly formatted XML with valid structure
+- **HTML documents**: Use recent version of Microsoft Word to open HTML files
 - **Browser compatibility**: Some older browsers may not support downloads
 - **File size limits**: Very large datasets (1000+ entries) may hit browser limits
 - **Network issues**: All operations work offline, no internet required
+- **XML parsing errors**: Check for special characters that need escaping
 
-### 🖨️ **Word Document Printing Issues?**
+### 🖨️ **HTML Document Printing Issues? (Enhanced v1.4)**
 - **Orientation**: Use landscape mode for best table layout
 - **Margins**: Ensure printer margins are set to 0.5 inches or less  
 - **Page breaks**: Large tables may span multiple pages
@@ -228,10 +273,20 @@ Shelf-Talker-Data/
 
 ## 📋 **Quick Start Instructions**
 
-1. **📁 Download** `production.html` to your computer
+### For v1.4 (Enhanced Version):
+1. **📁 Download** `Shelf-Talker Utilityv1.4.html` to your computer
+2. **🖱️ Double-click** to open in your browser  
+3. **📝 Start adding** your first book description (title+author required, description optional)
+4. **🔍 Search** to verify it saved correctly
+5. **🗂️ Use organization tools** to sort and manage your growing database
+6. **📊 Export** to JSON, XML, or HTML when ready to print shelf talkers
+
+### For v1.2 (Original Version):
+1. **📁 Download** `Shelf-Talker Utilityv1.2.html` for the stable baseline version
 2. **🖱️ Double-click** to open in your browser  
 3. **📝 Start adding** your first book description
 4. **🔍 Search** to verify it saved correctly
+5. **📄 Export HTML Doc** when ready to print shelf talkers
 5. **📄 Export Word Doc** when ready to print shelf talkers
 
 **Ready to streamline your shelf talker workflow immediately - no installation, no setup, no hassle!** 🎉

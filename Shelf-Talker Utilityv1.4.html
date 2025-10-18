@@ -367,6 +367,17 @@
                 <div id="resultsList" class="results-list"></div>
             </div>
 
+            <!-- Database organization section -->
+            <div class="data-organization" style="margin-top: 20px;">
+                <h3 style="color: #333; margin-bottom: 15px;">📊 Database Organization</h3>
+                <div class="button-group" style="justify-content: flex-start;">
+                    <button type="button" id="sortByTitle" class="btn btn-clear" style="font-size: 0.9em;">Sort by Title</button>
+                    <button type="button" id="sortByAuthor" class="btn btn-clear" style="font-size: 0.9em;">Sort by Author</button>
+                    <button type="button" id="sortByDate" class="btn btn-clear" style="font-size: 0.9em;">Sort by Date</button>
+                    <button type="button" id="showAllEntries" class="btn btn-search" style="font-size: 0.9em;">Show All Entries</button>
+                </div>
+            </div>
+
             <!-- Data management section -->
             <div class="data-management">
                 <div class="data-stats" id="dataStats">
@@ -374,10 +385,11 @@
                 </div>
                 <div class="button-group">
                     <button type="button" id="exportBtn" class="btn btn-export">📤 Export JSON</button>
-                    <button type="button" id="exportDocxBtn" class="btn btn-export">📄 Export Word Doc</button>
+                    <button type="button" id="exportXmlBtn" class="btn btn-export">📊 Export XML</button>
+                    <button type="button" id="exportDocxBtn" class="btn btn-export">📄 Export HTML</button>
                     <div class="file-input-wrapper">
                         <button type="button" class="btn btn-export">📥 Import Data</button>
-                        <input type="file" id="importFile" accept=".json,.docx" title="Import JSON data or Word documents">
+                        <input type="file" id="importFile" accept=".json,.xml,.docx" title="Import JSON, XML data or Word documents">
                     </div>
                 </div>
             </div>
@@ -548,6 +560,43 @@
                 link.click();
             }
 
+            exportXmlData() {
+                const entries = this.getAllEntries();
+                const sortedEntries = this.sortEntriesAlphabetically(entries);
+                
+                // Create Excel-readable XML format
+                let xmlContent = `<?xml version="1.0" encoding="UTF-8"?>\n`;
+                xmlContent += `<ShelfTalkers>\n`;
+                
+                sortedEntries.forEach(entry => {
+                    xmlContent += `  <Entry>\n`;
+                    xmlContent += `    <ID>${this.escapeXml(entry.id || '')}</ID>\n`;
+                    xmlContent += `    <Title>${this.escapeXml(entry.title || '')}</Title>\n`;
+                    xmlContent += `    <Author>${this.escapeXml(entry.author || '')}</Author>\n`;
+                    xmlContent += `    <Description>${this.escapeXml(entry.description || '')}</Description>\n`;
+                    xmlContent += `    <Timestamp>${this.escapeXml(entry.timestamp || '')}</Timestamp>\n`;
+                    xmlContent += `  </Entry>\n`;
+                });
+                
+                xmlContent += `</ShelfTalkers>`;
+                
+                const dataBlob = new Blob([xmlContent], { type: 'application/xml' });
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(dataBlob);
+                link.download = `shelf-talker-data-${new Date().toISOString().split('T')[0]}.xml`;
+                link.click();
+            }
+
+            escapeXml(text) {
+                if (!text) return '';
+                return text.toString()
+                    .replace(/&/g, '&amp;')
+                    .replace(/</g, '&lt;')
+                    .replace(/>/g, '&gt;')
+                    .replace(/"/g, '&quot;')
+                    .replace(/'/g, '&apos;');
+            }
+
             importData(jsonData) {
                 try {
                     const importedEntries = JSON.parse(jsonData);
@@ -584,6 +633,71 @@
                 }
             }
 
+            importXmlData(xmlData) {
+                try {
+                    // Parse XML using browser's native DOMParser
+                    const parser = new DOMParser();
+                    const xmlDoc = parser.parseFromString(xmlData, 'text/xml');
+                    
+                    // Check for parsing errors
+                    const parseError = xmlDoc.querySelector('parsererror');
+                    if (parseError) {
+                        throw new Error('Invalid XML format');
+                    }
+                    
+                    const entries = xmlDoc.querySelectorAll('Entry');
+                    const importedEntries = [];
+                    
+                    entries.forEach(entryNode => {
+                        const entry = {
+                            id: entryNode.querySelector('ID')?.textContent || '',
+                            title: entryNode.querySelector('Title')?.textContent || '',
+                            author: entryNode.querySelector('Author')?.textContent || '',
+                            description: entryNode.querySelector('Description')?.textContent || '',
+                            timestamp: entryNode.querySelector('Timestamp')?.textContent || new Date().toISOString()
+                        };
+                        
+                        // Validate required fields
+                        if (entry.title && entry.author) {
+                            importedEntries.push(entry);
+                        }
+                    });
+                    
+                    if (importedEntries.length === 0) {
+                        throw new Error('No valid entries found in XML file');
+                    }
+                    
+                    const existingEntries = this.getAllEntries();
+                    const mergedEntries = [...existingEntries];
+                    let newEntriesCount = 0;
+                    
+                    importedEntries.forEach(entry => {
+                        const existingIndex = mergedEntries.findIndex(e => 
+                            e.title.toLowerCase() === entry.title.toLowerCase() && 
+                            e.author.toLowerCase() === entry.author.toLowerCase()
+                        );
+                        
+                        if (existingIndex >= 0) {
+                            // Update existing entry
+                            mergedEntries[existingIndex] = { ...mergedEntries[existingIndex], ...entry };
+                        } else {
+                            // Add new entry
+                            if (!entry.id) {
+                                entry.id = Date.now() + '-' + Math.random().toString(36).substr(2, 9);
+                            }
+                            mergedEntries.push(entry);
+                            newEntriesCount++;
+                        }
+                    });
+                    
+                    this.saveAllEntries(mergedEntries);
+                    this.updateStats();
+                    return newEntriesCount;
+                } catch (error) {
+                    throw new Error('Failed to import XML data: ' + error.message);
+                }
+            }
+
             updateStats() {
                 const entries = this.getAllEntries();
                 const statsElement = document.getElementById('dataStats');
@@ -605,11 +719,18 @@
         const copyBtn = document.getElementById('copyBtn');
         const clearBtn = document.getElementById('clearBtn');
         const exportBtn = document.getElementById('exportBtn');
+        const exportXmlBtn = document.getElementById('exportXmlBtn');
         const exportDocxBtn = document.getElementById('exportDocxBtn');
         const importFile = document.getElementById('importFile');
         const searchResults = document.getElementById('searchResults');
         const resultsList = document.getElementById('resultsList');
         const statusMessage = document.getElementById('statusMessage');
+        
+        // Database organization elements
+        const sortByTitle = document.getElementById('sortByTitle');
+        const sortByAuthor = document.getElementById('sortByAuthor');
+        const sortByDate = document.getElementById('sortByDate');
+        const showAllEntries = document.getElementById('showAllEntries');
 
         // Initialize the app
         document.addEventListener('DOMContentLoaded', () => {
@@ -619,8 +740,15 @@
             copyBtn.addEventListener('click', handleCopy);
             clearBtn.addEventListener('click', clearForm);
             exportBtn.addEventListener('click', handleExport);
+            exportXmlBtn.addEventListener('click', handleExportXml);
             exportDocxBtn.addEventListener('click', handleExportDocx);
             importFile.addEventListener('change', handleImport);
+            
+            // Database organization event listeners
+            sortByTitle.addEventListener('click', () => handleDatabaseSort('title'));
+            sortByAuthor.addEventListener('click', () => handleDatabaseSort('author'));
+            sortByDate.addEventListener('click', () => handleDatabaseSort('date'));
+            showAllEntries.addEventListener('click', handleShowAllEntries);
             
             // Add Enter key support for search
             titleInput.addEventListener('keypress', (e) => {
@@ -767,6 +895,102 @@
             }
         }
 
+        // Handle XML export functionality
+        function handleExportXml() {
+            try {
+                storage.exportXmlData();
+                showStatus('XML data exported successfully!', 'success');
+            } catch (error) {
+                showStatus('XML export failed. Please try again.', 'error');
+            }
+        }
+
+        // Database organization functionality
+        function handleDatabaseSort(sortBy) {
+            try {
+                const entries = storage.getAllEntries();
+                if (entries.length === 0) {
+                    showStatus('No entries to sort', 'info');
+                    return;
+                }
+                
+                let sortedEntries = [...entries];
+                
+                switch (sortBy) {
+                    case 'title':
+                        sortedEntries = storage.sortEntriesAlphabetically(entries);
+                        showStatus('Entries sorted by title (A-Z)', 'success');
+                        break;
+                    case 'author':
+                        sortedEntries.sort((a, b) => a.author.localeCompare(b.author));
+                        showStatus('Entries sorted by author (A-Z)', 'success');
+                        break;
+                    case 'date':
+                        sortedEntries.sort((a, b) => new Date(b.timestamp || 0) - new Date(a.timestamp || 0));
+                        showStatus('Entries sorted by date (newest first)', 'success');
+                        break;
+                }
+                
+                displayDatabaseResults(sortedEntries, `Sorted by ${sortBy}`);
+            } catch (error) {
+                showStatus('Sort failed: ' + error.message, 'error');
+            }
+        }
+
+        function handleShowAllEntries() {
+            try {
+                const entries = storage.getAllEntries();
+                if (entries.length === 0) {
+                    showStatus('No entries in database', 'info');
+                    return;
+                }
+                
+                displayDatabaseResults(entries, 'All entries in database');
+                showStatus(`Showing all ${entries.length} entries`, 'success');
+            } catch (error) {
+                showStatus('Failed to show entries: ' + error.message, 'error');
+            }
+        }
+
+        function displayDatabaseResults(entries, title) {
+            if (!entries || entries.length === 0) {
+                searchResults.innerHTML = '<h3>No entries found</h3>';
+                searchResults.style.display = 'block';
+                return;
+            }
+            
+            resultsList.innerHTML = '';
+            
+            entries.forEach((entry, index) => {
+                const resultItem = document.createElement('div');
+                resultItem.className = 'result-item';
+                resultItem.innerHTML = `
+                    <div class="result-title">${escapeHtml(entry.title)}</div>
+                    <div class="result-author">by ${escapeHtml(entry.author)}</div>
+                    <div class="result-preview">${escapeHtml(entry.description.substring(0, 80))}${entry.description.length > 80 ? '...' : ''}</div>
+                    <div style="font-size: 0.7em; color: #999; margin-top: 4px;">
+                        Added: ${entry.timestamp ? new Date(entry.timestamp).toLocaleDateString() : 'Unknown'}
+                    </div>
+                    <button class="delete-btn" onclick="deleteEntry('${entry.id}')" title="Delete entry">×</button>
+                `;
+                
+                resultItem.addEventListener('click', (e) => {
+                    if (!e.target.classList.contains('delete-btn')) {
+                        titleInput.value = entry.title;
+                        authorInput.value = entry.author;
+                        descriptionInput.value = entry.description;
+                        searchResults.style.display = 'none';
+                    }
+                });
+                
+                resultsList.appendChild(resultItem);
+            });
+            
+            const resultsHeader = searchResults.querySelector('h3');
+            resultsHeader.textContent = `${title} (${entries.length} entries)`;
+            searchResults.style.display = 'block';
+        }
+
         // HTML-based Word document export - secure and self-contained
         function handleExportDocx() {
             try {
@@ -882,12 +1106,26 @@
                 };
                 reader.readAsText(file);
                 
+            } else if (fileName.endsWith('.xml')) {
+                // Handle XML import
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    try {
+                        const importedCount = storage.importXmlData(e.target.result);
+                        showStatus(`Successfully imported ${importedCount} new entries from XML!`, 'success');
+                        searchResults.style.display = 'none';
+                    } catch (error) {
+                        showStatus('XML import failed: ' + error.message, 'error');
+                    }
+                };
+                reader.readAsText(file);
+                
             } else if (fileName.endsWith('.docx')) {
                 // Handle DOCX import
                 handleImportDocx(file);
                 
             } else {
-                showStatus('Please select a .json or .docx file', 'error');
+                showStatus('Please select a .json, .xml, or .docx file', 'error');
             }
         }
 
