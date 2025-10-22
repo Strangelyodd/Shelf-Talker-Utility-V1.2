@@ -1,0 +1,1661 @@
+<!-- Shelf Talker Utility v1.5  (C) Charlie Dearing - Claude Sonnet 4 via VSCODE Agent - 10.18.2025-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shelf Talker Utility v1.5</title>
+    <!-- No external dependencies - fully self-contained for security -->
+    <style>
+        /* Reset and base styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            width: 100%;
+            max-width: 600px;
+            min-height: 500px;
+        }
+
+        /* Header */
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #f0f0f0;
+            padding-bottom: 20px;
+        }
+
+        header h1 {
+            color: #333;
+            font-size: 2.2em;
+            margin-bottom: 8px;
+        }
+
+        header p {
+            color: #666;
+            font-size: 1.1em;
+        }
+
+        .version-badge {
+            background: #17a2b8;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.8em;
+            margin-left: 10px;
+        }
+
+        /* Form styles */
+        .book-form {
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 600;
+            color: #333;
+            font-size: 1em;
+        }
+
+        input[type="text"], textarea {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e1e5e9;
+            border-radius: 8px;
+            font-size: 1em;
+            font-family: inherit;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        input[type="text"]:focus, textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        /* Button styles */
+        .button-group {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-top: 25px;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .btn-search {
+            background: #17a2b8;
+            color: white;
+        }
+
+        .btn-search:hover:not(:disabled) {
+            background: #138496;
+            transform: translateY(-2px);
+        }
+
+        .btn-save {
+            background: #28a745;
+            color: white;
+        }
+
+        .btn-save:hover:not(:disabled) {
+            background: #218838;
+            transform: translateY(-2px);
+        }
+
+        .btn-copy {
+            background: #6f42c1;
+            color: white;
+        }
+
+        .btn-copy:hover:not(:disabled) {
+            background: #5a32a3;
+            transform: translateY(-2px);
+        }
+
+        .btn-clear {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-clear:hover:not(:disabled) {
+            background: #5a6268;
+            transform: translateY(-2px);
+        }
+
+        .btn-export {
+            background: #fd7e14;
+            color: white;
+        }
+
+        .btn-export:hover:not(:disabled) {
+            background: #e8680d;
+            transform: translateY(-2px);
+        }
+
+        /* Search results */
+        .search-results {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 20px;
+            border: 1px solid #dee2e6;
+        }
+
+        .search-results h3 {
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .results-list {
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .result-item {
+            background: white;
+            padding: 12px 16px;
+            margin-bottom: 8px;
+            border-radius: 6px;
+            border: 1px solid #e9ecef;
+            transition: all 0.2s ease;
+            position: relative;
+            min-height: 60px;
+        }
+
+        .result-item:hover {
+            background: #e7f3ff;
+            border-color: #667eea;
+        }
+
+        .result-title {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 4px;
+        }
+
+        .result-author {
+            color: #666;
+            font-size: 0.9em;
+            margin-bottom: 4px;
+        }
+
+        .result-preview {
+            color: #888;
+            font-size: 0.8em;
+            font-style: italic;
+        }
+
+        .delete-btn {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            cursor: pointer;
+            font-size: 12px;
+            display: none;
+        }
+
+        .result-item:hover .delete-btn {
+            display: block;
+        }
+
+        /* Status messages */
+        .status-message {
+            margin-top: 15px;
+            padding: 12px 16px;
+            border-radius: 6px;
+            text-align: center;
+            font-weight: 500;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .status-message.show {
+            opacity: 1;
+        }
+
+        .status-message.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .status-message.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .status-message.info {
+            background: #cce7ff;
+            color: #004085;
+            border: 1px solid #b3d7ff;
+        }
+
+        /* Data management section */
+        .data-management {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #dee2e6;
+        }
+
+        .data-stats {
+            background: #e9ecef;
+            padding: 10px 15px;
+            border-radius: 6px;
+            margin-bottom: 15px;
+            text-align: center;
+            color: #495057;
+            font-size: 0.9em;
+        }
+
+        /* File input styling */
+        .file-input-wrapper {
+            position: relative;
+            overflow: hidden;
+            display: inline-block;
+        }
+
+        .file-input-wrapper input[type=file] {
+            position: absolute;
+            left: -9999px;
+        }
+
+        /* Responsive design */
+        @media (max-width: 600px) {
+            .container {
+                margin: 10px;
+                padding: 20px;
+            }
+            
+            .button-group {
+                flex-direction: column;
+            }
+            
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📚 Shelf Talker Utility <span class="version-badge">v1.5</span></h1>
+            <p>Print Workflow • Database Merge • Individual Copy Buttons • Print Tray</p>
+        </header>
+
+        <main>
+            <form id="bookForm" class="book-form">
+                <div class="form-group">
+                    <label for="title">Title:</label>
+                    <div style="display: flex; gap: 8px; align-items: center;">
+                        <input type="text" id="title" name="title" placeholder="Enter book title" required style="flex: 1;">
+                        <button type="button" id="copyTitleBtn" class="btn btn-copy" style="padding: 8px 12px; font-size: 0.9em;" title="Copy title">📋</button>
+                    </div>
+                    <!-- Search and Clear buttons moved below Title field -->
+                    <div class="button-group" style="margin-top: 10px; justify-content: flex-start;">
+                        <button type="button" id="searchBtn" class="btn btn-search">🔍 Search</button>
+                        <button type="button" id="clearBtn" class="btn btn-clear">🗑️ Clear</button>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="author">Author:</label>
+                    <div style="display: flex; gap: 8px; align-items: center;">
+                        <input type="text" id="author" name="author" placeholder="Enter author name" required style="flex: 1;">
+                        <button type="button" id="copyAuthorBtn" class="btn btn-copy" style="padding: 8px 12px; font-size: 0.9em;" title="Copy author">📋</button>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="description">Description:</label>
+                    <div style="display: flex; gap: 8px; align-items: flex-start;">
+                        <textarea id="description" name="description" placeholder="Enter shelf talker description" rows="4" required style="flex: 1;"></textarea>
+                        <button type="button" id="copyDescriptionBtn" class="btn btn-copy" style="padding: 8px 12px; font-size: 0.9em; height: fit-content;" title="Copy description">📋</button>
+                    </div>
+                    <!-- Save and Copy All buttons below Description -->
+                    <div class="button-group" style="margin-top: 10px; justify-content: flex-start;">
+                        <button type="button" id="saveBtn" class="btn btn-save">💾 Save</button>
+                        <button type="button" id="copyBtn" class="btn btn-copy">📋 Copy All Fields</button>
+                    </div>
+                </div>
+            </form>
+
+            <!-- Search results area (initially hidden) -->
+            <div id="searchResults" class="search-results" style="display: none;">
+                <h3>Search Results:</h3>
+                <div id="resultsList" class="results-list"></div>
+            </div>
+
+            <!-- Database organization section -->
+            <div class="data-organization" style="margin-top: 20px;">
+                <h3 style="color: #333; margin-bottom: 15px;">📊 Database Organization</h3>
+                <div class="button-group" style="justify-content: flex-start;">
+                    <button type="button" id="sortByTitle" class="btn btn-clear" style="font-size: 0.9em;">Sort by Title</button>
+                    <button type="button" id="sortByAuthor" class="btn btn-clear" style="font-size: 0.9em;">Sort by Author</button>
+                    <button type="button" id="sortByDate" class="btn btn-clear" style="font-size: 0.9em;">Sort by Date</button>
+                    <button type="button" id="showAllEntries" class="btn btn-search" style="font-size: 0.9em;">Show All Entries</button>
+                </div>
+            </div>
+
+            <!-- Data management section -->
+            <div class="data-management">
+                <div class="data-stats" id="dataStats">
+                    Database: 0 entries stored
+                </div>
+                <div class="button-group">
+                    <button type="button" id="exportBtn" class="btn btn-export">📤 Export JSON</button>
+                    <button type="button" id="exportXmlBtn" class="btn btn-export">📊 Export XML</button>
+                    <button type="button" id="exportDocxBtn" class="btn btn-export">📄 Export HTML</button>
+                    <div class="file-input-wrapper">
+                        <button type="button" class="btn btn-export">📥 Import Data</button>
+                        <input type="file" id="importFile" accept=".json,.xml,.docx" title="Import JSON, XML data or Word documents">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Print Tray System -->
+            <div class="print-tray-container" style="margin-top: 20px;">
+                <div class="print-tray" style="border: 2px solid #4CAF50; border-radius: 8px; padding: 15px; background-color: #f9f9f9;">
+                    <h4 style="color: #4CAF50; margin-bottom: 10px;">🖨️ Print Tray (Max 5 entries)</h4>
+                    <div id="print-tray-list" style="min-height: 50px; margin-bottom: 10px;">
+                        <p style="color: #666; font-style: italic;">No entries in print tray. Click "Add to Print Tray" on any database entry.</p>
+                    </div>
+                    <div class="print-tray-actions">
+                        <button type="button" id="print-tray-btn" class="btn btn-export" onclick="printTrayEntries()" disabled>🖨️ Print Selected</button>
+                        <button type="button" id="clear-tray-btn" class="btn btn-clear" onclick="clearPrintTray()" disabled>🗑️ Clear Tray</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Status messages -->
+            <div id="statusMessage" class="status-message"></div>
+
+            <!-- Testing/Admin Section -->
+            <div class="admin-section" style="margin-top: 30px; padding-top: 20px; border-top: 2px solid #f0f0f0;">
+                <h4 style="color: #666; margin-bottom: 15px; text-align: center;">🔧 Testing & Administration</h4>
+                <div style="text-align: center;">
+                    <button type="button" id="purgeDbBtn" class="btn" style="background-color: #8B4B4B; color: white; border: 1px solid #7A4040; padding: 10px 20px; font-size: 0.9em;">🗑️ Delete Entire Database</button>
+                    <p style="font-size: 0.8em; color: #999; margin-top: 8px;">⚠️ For testing purposes - will permanently delete all entries</p>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Browser Storage Manager
+        class BrowserStorageManager {
+            constructor() {
+                this.storageKey = 'shelfTalkerEntries';
+                this.init();
+            }
+
+            init() {
+                if (!this.isLocalStorageAvailable()) {
+                    this.memoryStorage = [];
+                }
+                this.updateStats();
+            }
+
+            isLocalStorageAvailable() {
+                try {
+                    const test = '__localStorage_test__';
+                    localStorage.setItem(test, test);
+                    localStorage.removeItem(test);
+                    return true;
+                } catch (e) {
+                    return false;
+                }
+            }
+
+            getAllEntries() {
+                if (this.isLocalStorageAvailable()) {
+                    const stored = localStorage.getItem(this.storageKey);
+                    return stored ? JSON.parse(stored) : [];
+                } else {
+                    return this.memoryStorage || [];
+                }
+            }
+
+            saveEntry(entry, forceSave = false) {
+                try {
+                    if (!entry || !entry.title || !entry.author) {
+                        throw new Error('Invalid entry: missing title or author');
+                    }
+                    
+                    const entries = this.getAllEntries();
+                    
+                    // Check for exact duplicates (same title and author)
+                    const existingEntry = entries.find(e => 
+                        e.title.toLowerCase() === entry.title.toLowerCase() && 
+                        e.author.toLowerCase() === entry.author.toLowerCase()
+                    );
+                    
+                    if (existingEntry && !forceSave) {
+                        // Return duplicate detection info
+                        return {
+                            isDuplicate: true,
+                            existingEntry: existingEntry,
+                            newEntry: entry
+                        };
+                    }
+                    
+                    // Add timestamp and unique ID
+                    entry.id = Date.now() + '-' + Math.random().toString(36).substr(2, 9);
+                    entry.timestamp = new Date().toISOString();
+                    
+                    if (existingEntry && forceSave) {
+                        // Update existing entry
+                        const existingIndex = entries.findIndex(e => e.id === existingEntry.id);
+                        entries[existingIndex] = { ...entries[existingIndex], ...entry };
+                    } else {
+                        // Add new entry
+                        entries.push(entry);
+                    }
+
+                    this.saveAllEntries(entries);
+                    this.updateStats();
+                    return { isDuplicate: false, entry: entry };
+                } catch (error) {
+                    throw error;
+                }
+            }
+
+            saveAllEntries(entries) {
+                try {
+                    if (this.isLocalStorageAvailable()) {
+                        const dataString = JSON.stringify(entries);
+                        localStorage.setItem(this.storageKey, dataString);
+                        
+                        // Verify it was saved
+                        const verification = localStorage.getItem(this.storageKey);
+                        if (!verification) {
+                            throw new Error('Failed to verify localStorage save');
+                        }
+                    } else {
+                        this.memoryStorage = entries;
+                    }
+                } catch (error) {
+                    if (error.name === 'QuotaExceededError') {
+                        throw new Error('Storage quota exceeded. Please export and clear old data.');
+                    } else {
+                        throw new Error('Failed to save data: ' + error.message);
+                    }
+                }
+            }
+
+            searchEntries(query) {
+                const entries = this.getAllEntries();
+                const searchTerm = query.toLowerCase().trim();
+                
+                if (!searchTerm) return [];
+                
+                return entries.filter(entry => {
+                    const titleMatch = entry.title.toLowerCase().includes(searchTerm);
+                    const authorMatch = entry.author.toLowerCase().includes(searchTerm);
+                    
+                    // Word boundary matching for better precision
+                    const titleWordMatch = entry.title.toLowerCase().split(/\s+/).some(word => word.startsWith(searchTerm));
+                    const authorWordMatch = entry.author.toLowerCase().split(/\s+/).some(word => word.startsWith(searchTerm));
+                    
+                    return titleMatch || authorMatch || titleWordMatch || authorWordMatch;
+                });
+            }
+
+            deleteEntry(id) {
+                const entries = this.getAllEntries();
+                const filteredEntries = entries.filter(entry => entry.id !== id);
+                this.saveAllEntries(filteredEntries);
+                this.updateStats();
+            }
+
+            // Library-style alphabetization - ignores "The", "A", "An" articles
+            sortEntriesAlphabetically(entries) {
+                return entries.sort((a, b) => {
+                    const getSortableTitle = (title) => {
+                        const articles = ['the ', 'a ', 'an '];
+                        let sortTitle = title.toLowerCase();
+                        for (const article of articles) {
+                            if (sortTitle.startsWith(article)) {
+                                sortTitle = sortTitle.substring(article.length);
+                                break;
+                            }
+                        }
+                        return sortTitle;
+                    };
+                    
+                    const titleA = getSortableTitle(a.title);
+                    const titleB = getSortableTitle(b.title);
+                    
+                    return titleA.localeCompare(titleB);
+                });
+            }
+
+            exportData() {
+                const entries = this.getAllEntries();
+                const sortedEntries = this.sortEntriesAlphabetically(entries);
+                const dataStr = JSON.stringify(sortedEntries, null, 2);
+                const dataBlob = new Blob([dataStr], { type: 'application/json' });
+                
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(dataBlob);
+                link.download = `shelf-talker-data-${new Date().toISOString().split('T')[0]}.json`;
+                link.click();
+            }
+
+            exportXmlData() {
+                const entries = this.getAllEntries();
+                const sortedEntries = this.sortEntriesAlphabetically(entries);
+                
+                // Create Excel-readable XML format
+                let xmlContent = `<?xml version="1.0" encoding="UTF-8"?>\n`;
+                xmlContent += `<ShelfTalkers>\n`;
+                
+                sortedEntries.forEach(entry => {
+                    xmlContent += `  <Entry>\n`;
+                    xmlContent += `    <ID>${this.escapeXml(entry.id || '')}</ID>\n`;
+                    xmlContent += `    <Title>${this.escapeXml(entry.title || '')}</Title>\n`;
+                    xmlContent += `    <Author>${this.escapeXml(entry.author || '')}</Author>\n`;
+                    xmlContent += `    <Description>${this.escapeXml(entry.description || '')}</Description>\n`;
+                    xmlContent += `    <Timestamp>${this.escapeXml(entry.timestamp || '')}</Timestamp>\n`;
+                    xmlContent += `  </Entry>\n`;
+                });
+                
+                xmlContent += `</ShelfTalkers>`;
+                
+                const dataBlob = new Blob([xmlContent], { type: 'application/xml' });
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(dataBlob);
+                link.download = `shelf-talker-data-${new Date().toISOString().split('T')[0]}.xml`;
+                link.click();
+            }
+
+            escapeXml(text) {
+                if (!text) return '';
+                return text.toString()
+                    .replace(/&/g, '&amp;')
+                    .replace(/</g, '&lt;')
+                    .replace(/>/g, '&gt;')
+                    .replace(/"/g, '&quot;')
+                    .replace(/'/g, '&apos;');
+            }
+
+            importData(jsonData) {
+                try {
+                    console.log('Starting JSON import, data length:', jsonData.length);
+                    const importedEntries = JSON.parse(jsonData);
+                    console.log('Parsed entries:', importedEntries.length);
+                    
+                    if (!Array.isArray(importedEntries)) {
+                        throw new Error('Invalid data format - not an array');
+                    }
+                    
+                    const existingEntries = this.getAllEntries();
+                    console.log('Existing entries:', existingEntries.length);
+                    const mergedEntries = [...existingEntries];
+                    let newEntryCount = 0;
+                    
+                    importedEntries.forEach((entry, index) => {
+                        console.log(`Processing entry ${index}:`, entry.title);
+                        
+                        // Validate required fields
+                        if (!entry.title || !entry.author) {
+                            console.warn(`Skipping entry ${index} - missing title or author`);
+                            return;
+                        }
+                        
+                        const existingIndex = mergedEntries.findIndex(e => 
+                            e.title.toLowerCase() === entry.title.toLowerCase() && 
+                            e.author.toLowerCase() === entry.author.toLowerCase()
+                        );
+                        
+                        if (existingIndex >= 0) {
+                            // Update existing
+                            console.log(`Updating existing entry: ${entry.title}`);
+                            mergedEntries[existingIndex] = { ...mergedEntries[existingIndex], ...entry };
+                        } else {
+                            // Add new
+                            console.log(`Adding new entry: ${entry.title}`);
+                            if (!entry.id) {
+                                entry.id = Date.now() + '-' + Math.random().toString(36).substr(2, 9);
+                            }
+                            mergedEntries.push(entry);
+                            newEntryCount++;
+                        }
+                    });
+                    
+                    console.log('Saving merged entries:', mergedEntries.length);
+                    this.saveAllEntries(mergedEntries);
+                    this.updateStats();
+                    console.log('Import complete, new entries:', newEntryCount);
+                    return newEntryCount;
+                } catch (error) {
+                    console.error('Import error:', error);
+                    throw new Error('Failed to import data: ' + error.message);
+                }
+            }
+
+            importXmlData(xmlData) {
+                try {
+                    // Parse XML using browser's native DOMParser
+                    const parser = new DOMParser();
+                    const xmlDoc = parser.parseFromString(xmlData, 'text/xml');
+                    
+                    // Check for parsing errors
+                    const parseError = xmlDoc.querySelector('parsererror');
+                    if (parseError) {
+                        throw new Error('Invalid XML format');
+                    }
+                    
+                    const entries = xmlDoc.querySelectorAll('Entry');
+                    const importedEntries = [];
+                    
+                    entries.forEach(entryNode => {
+                        const entry = {
+                            id: entryNode.querySelector('ID')?.textContent || '',
+                            title: entryNode.querySelector('Title')?.textContent || '',
+                            author: entryNode.querySelector('Author')?.textContent || '',
+                            description: entryNode.querySelector('Description')?.textContent || '',
+                            timestamp: entryNode.querySelector('Timestamp')?.textContent || new Date().toISOString()
+                        };
+                        
+                        // Validate required fields
+                        if (entry.title && entry.author) {
+                            importedEntries.push(entry);
+                        }
+                    });
+                    
+                    if (importedEntries.length === 0) {
+                        throw new Error('No valid entries found in XML file');
+                    }
+                    
+                    const existingEntries = this.getAllEntries();
+                    const mergedEntries = [...existingEntries];
+                    let newEntriesCount = 0;
+                    
+                    importedEntries.forEach(entry => {
+                        const existingIndex = mergedEntries.findIndex(e => 
+                            e.title.toLowerCase() === entry.title.toLowerCase() && 
+                            e.author.toLowerCase() === entry.author.toLowerCase()
+                        );
+                        
+                        if (existingIndex >= 0) {
+                            // Update existing entry
+                            mergedEntries[existingIndex] = { ...mergedEntries[existingIndex], ...entry };
+                        } else {
+                            // Add new entry
+                            if (!entry.id) {
+                                entry.id = Date.now() + '-' + Math.random().toString(36).substr(2, 9);
+                            }
+                            mergedEntries.push(entry);
+                            newEntriesCount++;
+                        }
+                    });
+                    
+                    this.saveAllEntries(mergedEntries);
+                    this.updateStats();
+                    return newEntriesCount;
+                } catch (error) {
+                    throw new Error('Failed to import XML data: ' + error.message);
+                }
+            }
+
+            updateStats() {
+                const entries = this.getAllEntries();
+                const statsElement = document.getElementById('dataStats');
+                if (statsElement) {
+                    statsElement.textContent = `Database: ${entries.length} entries stored`;
+                }
+            }
+        }
+
+        // Initialize storage manager
+        const storage = new BrowserStorageManager();
+
+        // DOM elements
+        const titleInput = document.getElementById('title');
+        const authorInput = document.getElementById('author');
+        const descriptionInput = document.getElementById('description');
+        const searchBtn = document.getElementById('searchBtn');
+        const saveBtn = document.getElementById('saveBtn');
+        const copyBtn = document.getElementById('copyBtn');
+        const copyTitleBtn = document.getElementById('copyTitleBtn');
+        const copyAuthorBtn = document.getElementById('copyAuthorBtn');
+        const copyDescriptionBtn = document.getElementById('copyDescriptionBtn');
+        const printTrayList = document.getElementById('print-tray-list');
+        const printTrayBtn = document.getElementById('print-tray-btn');
+        const clearTrayBtn = document.getElementById('clear-tray-btn');
+        const purgeDbBtn = document.getElementById('purgeDbBtn');
+        const clearBtn = document.getElementById('clearBtn');
+        const exportBtn = document.getElementById('exportBtn');
+        const exportXmlBtn = document.getElementById('exportXmlBtn');
+        const exportDocxBtn = document.getElementById('exportDocxBtn');
+        const importFile = document.getElementById('importFile');
+        const searchResults = document.getElementById('searchResults');
+        const resultsList = document.getElementById('resultsList');
+        const statusMessage = document.getElementById('statusMessage');
+        
+        // Database organization elements
+        const sortByTitle = document.getElementById('sortByTitle');
+        const sortByAuthor = document.getElementById('sortByAuthor');
+        const sortByDate = document.getElementById('sortByDate');
+        const showAllEntries = document.getElementById('showAllEntries');
+
+        // Initialize the app
+        document.addEventListener('DOMContentLoaded', () => {
+            // Add event listeners
+            searchBtn.addEventListener('click', handleSearch);
+            saveBtn.addEventListener('click', handleSave);
+            copyBtn.addEventListener('click', handleCopy);
+            copyTitleBtn.addEventListener('click', () => handleCopyField('title'));
+            copyAuthorBtn.addEventListener('click', () => handleCopyField('author'));
+            copyDescriptionBtn.addEventListener('click', () => handleCopyField('description'));
+            purgeDbBtn.addEventListener('click', handlePurgeDatabase);
+            clearBtn.addEventListener('click', clearForm);
+            exportBtn.addEventListener('click', handleExport);
+            exportXmlBtn.addEventListener('click', handleExportXml);
+            exportDocxBtn.addEventListener('click', handleExportDocx);
+            importFile.addEventListener('change', handleImport);
+            
+            // Database organization event listeners
+            sortByTitle.addEventListener('click', () => handleDatabaseSort('title'));
+            sortByAuthor.addEventListener('click', () => handleDatabaseSort('author'));
+            sortByDate.addEventListener('click', () => handleDatabaseSort('date'));
+            showAllEntries.addEventListener('click', handleShowAllEntries);
+            
+            // Add Enter key support for search
+            titleInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') handleSearch();
+            });
+            
+            authorInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') handleSearch();
+            });
+
+            // Import file input trigger
+            document.querySelector('.file-input-wrapper .btn').addEventListener('click', () => {
+                importFile.click();
+            });
+        });
+
+        // Print Tray Management
+        let printTray = [];
+        
+        function addToPrintTray(entry) {
+            if (printTray.length >= 5) {
+                showStatus('Print tray is full (max 5 entries). Remove some entries first.', 'error');
+                return;
+            }
+            
+            const exists = printTray.find(item => item.id === entry.id);
+            if (exists) {
+                showStatus('Entry already in print tray!', 'error');
+                return;
+            }
+            
+            printTray.push(entry);
+            updatePrintTrayDisplay();
+            showStatus(`Added "${entry.title}" to print tray!`, 'success');
+        }
+        
+        function removeFromPrintTray(entryId) {
+            printTray = printTray.filter(item => item.id !== entryId);
+            updatePrintTrayDisplay();
+            showStatus('Entry removed from print tray', 'success');
+        }
+        
+        function clearPrintTray() {
+            if (printTray.length === 0) {
+                showStatus('Print tray is already empty', 'error');
+                return;
+            }
+            
+            printTray = [];
+            updatePrintTrayDisplay();
+            showStatus('Print tray cleared', 'success');
+        }
+        
+        function updatePrintTrayDisplay() {
+            if (printTray.length === 0) {
+                printTrayList.innerHTML = '<p style="color: #666; font-style: italic;">No entries in print tray. Click "📋 Add" on any database entry.</p>';
+                printTrayBtn.disabled = true;
+                clearTrayBtn.disabled = true;
+            } else {
+                let trayHtml = '';
+                printTray.forEach(entry => {
+                    trayHtml += `
+                        <div style="border: 1px solid #ddd; border-radius: 5px; padding: 10px; margin-bottom: 8px; background-color: white;">
+                            <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                                <div style="flex: 1;">
+                                    <strong>${entry.title}</strong> by ${entry.author}<br>
+                                    <small style="color: #666;">${entry.description.substring(0, 100)}${entry.description.length > 100 ? '...' : ''}</small>
+                                </div>
+                                <button type="button" onclick="removeFromPrintTray('${entry.id}')" class="btn btn-clear" style="padding: 4px 8px; font-size: 0.8em; margin-left: 10px;">✕</button>
+                            </div>
+                        </div>
+                    `;
+                });
+                printTrayList.innerHTML = trayHtml;
+                printTrayBtn.disabled = false;
+                clearTrayBtn.disabled = false;
+            }
+            
+            // Refresh search results to update "Add to Tray" button states
+            if (searchResults.style.display === 'block' && resultsList.innerHTML.includes('result-item')) {
+                const currentEntries = storage.getAllEntries();
+                displayDatabaseResults(currentEntries, 'All entries in database');
+            }
+        }
+        
+        function printTrayEntries() {
+            if (printTray.length === 0) {
+                showStatus('No entries in print tray to print', 'error');
+                return;
+            }
+            
+            const printWindow = window.open('', '_blank');
+            const printContent = `
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <title>Shelf Talkers - Print ${printTray.length} Entries</title>
+                    <style>
+                        @page {
+                            size: 8.5in 11in;
+                            margin: 0;
+                        }
+                        
+                        body { 
+                            font-family: serif;
+                            margin: 0;
+                            padding: 0;
+                        }
+                        
+                        .page {
+                            width: 8.5in;
+                            height: 11in;
+                            padding: 0.5in;
+                            box-sizing: border-box;
+                            page-break-after: always;
+                        }
+                        
+                        .page:last-child {
+                            page-break-after: avoid;
+                        }
+                        
+                        .print-header {
+                            text-align: center;
+                            margin-bottom: 0.3in;
+                            font-size: 1.1em;
+                            font-weight: bold;
+                        }
+                        
+                        .shelf-talker {
+                            width: 100%;
+                            height: 2in;
+                            margin-bottom: 0.2in;
+                            border-bottom: 1px dotted #000;
+                            padding: 0.2in;
+                            box-sizing: border-box;
+                            page-break-inside: avoid;
+                        }
+                        
+                        .shelf-talker:last-child {
+                            border-bottom: none;
+                        }
+                        
+                        .title {
+                            font-weight: bold;
+                            font-size: 1.2em;
+                            margin-bottom: 0.1in;
+                            line-height: 1.2;
+                        }
+                        
+                        .author {
+                            font-style: italic;
+                            margin-bottom: 0.2em;
+                            font-size: 1em;
+                            color: #333;
+                        }
+                        
+                        .description {
+                            margin-bottom: 0.2em;
+                            font-size: 0.9em;
+                            line-height: 1.3;
+                        }
+                        
+                        .store {
+                            font-size: 0.8em;
+                            color: #555;
+                            text-align: right;
+                            margin-top: auto;
+                        }
+                        
+                        @media print {
+                            body { margin: 0; }
+                            .page { margin: 0; }
+                        }
+                    </style>
+                </head>
+                <body>
+            `;
+            
+            // Calculate how many pages we need (5 shelf talkers per page)
+            const entriesPerPage = 5;
+            const totalPages = Math.ceil(printTray.length / entriesPerPage);
+            
+            let pageContent = '';
+            for (let page = 0; page < totalPages; page++) {
+                const startIndex = page * entriesPerPage;
+                const endIndex = Math.min(startIndex + entriesPerPage, printTray.length);
+                const pageEntries = printTray.slice(startIndex, endIndex);
+                
+                pageContent += `
+                    <div class="page">
+                        <div class="print-header">
+                            📚 Shelf Talkers - Generated: ${new Date().toLocaleDateString()}
+                            <br>Page ${page + 1} of ${totalPages} (${pageEntries.length} entries)
+                        </div>
+                        ${pageEntries.map(entry => `
+                            <div class="shelf-talker">
+                                <div class="title">${entry.title}</div>
+                                <div class="author">by ${entry.author}</div>
+                                <div class="description">${entry.description}</div>
+                                <div class="store">Your Bookstore Name Here</div>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+            }
+            
+            const fullContent = printContent + pageContent + `
+                </body>
+                </html>
+            `;
+            
+            printWindow.document.write(fullContent);
+            printWindow.document.close();
+            printWindow.focus();
+            
+            setTimeout(() => {
+                printWindow.print();
+            }, 500);
+            
+            showStatus(`Print dialog opened for ${printTray.length} entries (${totalPages} pages)`, 'success');
+        }
+
+        // Handle individual field copy functionality
+        async function handleCopyField(fieldName) {
+            let value = '';
+            let fieldLabel = '';
+            
+            switch (fieldName) {
+                case 'title':
+                    value = titleInput.value.trim();
+                    fieldLabel = 'Title';
+                    break;
+                case 'author':
+                    value = authorInput.value.trim();
+                    fieldLabel = 'Author';
+                    break;
+                case 'description':
+                    value = descriptionInput.value.trim();
+                    fieldLabel = 'Description';
+                    break;
+            }
+            
+            if (!value) {
+                showStatus(`${fieldLabel} field is empty`, 'error');
+                return;
+            }
+            
+            try {
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    await navigator.clipboard.writeText(value);
+                    showStatus(`${fieldLabel} copied to clipboard!`, 'success');
+                } else {
+                    const textArea = document.createElement('textarea');
+                    textArea.value = value;
+                    document.body.appendChild(textArea);
+                    textArea.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(textArea);
+                    showStatus(`${fieldLabel} copied to clipboard!`, 'success');
+                }
+            } catch (error) {
+                showStatus(`Copy failed for ${fieldLabel}. Please try again.`, 'error');
+            }
+        }
+
+        function deleteEntry(entryId) {
+            try {
+                const entries = storage.getAllEntries();
+                const entry = entries.find(e => e.id === entryId);
+                
+                if (!entry) {
+                    showStatus('Entry not found', 'error');
+                    return;
+                }
+                
+                if (confirm(`Are you sure you want to delete "${entry.title}" by ${entry.author}?`)) {
+                    const filteredEntries = entries.filter(e => e.id !== entryId);
+                    storage.saveAllEntries(filteredEntries);
+                    
+                    removeFromPrintTray(entryId);
+                    handleShowAllEntries();
+                    
+                    showStatus(`Deleted "${entry.title}"`, 'success');
+                }
+            } catch (error) {
+                showStatus('Failed to delete entry: ' + error.message, 'error');
+            }
+        }
+
+        // Database purge function for testing
+        function handlePurgeDatabase() {
+            const currentEntries = storage.getAllEntries();
+            
+            if (currentEntries.length === 0) {
+                showStatus('Database is already empty', 'info');
+                return;
+            }
+            
+            const confirmMessage = `⚠️ DANGER: DELETE ENTIRE DATABASE ⚠️\n\n` +
+                `This will permanently delete ALL ${currentEntries.length} entries from the database.\n\n` +
+                `This action CANNOT be undone!\n\n` +
+                `Are you absolutely sure you want to proceed?`;
+            
+            if (confirm(confirmMessage)) {
+                // Second confirmation for safety
+                const secondConfirm = `FINAL CONFIRMATION\n\n` +
+                    `You are about to delete ${currentEntries.length} book entries.\n\n` +
+                    `Type "DELETE" in the next prompt to confirm:`;
+                
+                const userInput = prompt(secondConfirm);
+                
+                if (userInput === "DELETE") {
+                    try {
+                        // Clear localStorage
+                        storage.saveAllEntries([]);
+                        
+                        // Clear print tray
+                        printTray = [];
+                        updatePrintTrayDisplay();
+                        
+                        // Hide search results
+                        searchResults.style.display = 'none';
+                        
+                        // Clear form
+                        clearForm();
+                        
+                        showStatus(`✅ Database purged! Deleted ${currentEntries.length} entries.`, 'success');
+                    } catch (error) {
+                        showStatus('Failed to purge database: ' + error.message, 'error');
+                    }
+                } else {
+                    showStatus('Database purge cancelled - incorrect confirmation text', 'info');
+                }
+            } else {
+                showStatus('Database purge cancelled', 'info');
+            }
+        }
+
+        // Handle search functionality
+        function handleSearch() {
+            const title = titleInput.value.trim();
+            const author = authorInput.value.trim();
+            
+            if (!title && !author) {
+                showStatus('Please enter a title or author to search', 'error');
+                return;
+            }
+            
+            try {
+                showStatus('Searching...', 'info');
+                
+                const searchTerm = title || author;
+                const results = storage.searchEntries(searchTerm);
+                
+                displaySearchResults(results);
+                
+                if (results.length === 0) {
+                    showStatus('No matching titles found', 'info');
+                } else {
+                    showStatus(`Found ${results.length} match(es)`, 'success');
+                }
+                
+            } catch (error) {
+                showStatus('Search failed. Please try again.', 'error');
+            }
+        }
+
+        // Handle save functionality
+        function handleSave() {
+            const title = titleInput.value.trim();
+            const author = authorInput.value.trim();
+            let description = descriptionInput.value.trim();
+            
+            if (!title || !author) {
+                showStatus('Please fill in at least Title and Author before saving', 'error');
+                return;
+            }
+            
+            // If description is empty, set to "None"
+            if (!description) {
+                description = "None";
+                showStatus('No body text provided - saving with "None"', 'info');
+            }
+            
+            try {
+                showStatus('Saving...', 'info');
+                
+                const entry = {
+                    title,
+                    author,
+                    description
+                };
+                
+                const result = storage.saveEntry(entry);
+                
+                if (result.isDuplicate) {
+                    // Show duplicate confirmation dialog
+                    const confirmMessage = `A shelf talker already exists for:\n\n` +
+                        `Title: "${result.existingEntry.title}"\n` +
+                        `Author: "${result.existingEntry.author}"\n` +
+                        `Current Description: "${result.existingEntry.description}"\n\n` +
+                        `Do you want to update it with the new description:\n"${description}"?`;
+                    
+                    if (confirm(confirmMessage)) {
+                        // Force save the update
+                        const updateResult = storage.saveEntry(entry, true);
+                        showStatus('Entry updated successfully!', 'success');
+                    } else {
+                        showStatus('Save cancelled - existing entry preserved', 'info');
+                        return;
+                    }
+                } else {
+                    showStatus('Entry saved successfully!', 'success');
+                }
+                
+                // Refresh the search results display if it's currently shown
+                if (searchResults.style.display === 'block' && resultsList.innerHTML.includes('result-item')) {
+                    const currentEntries = storage.getAllEntries();
+                    displayDatabaseResults(currentEntries, 'All entries in database');
+                }
+                
+                // Clear the form after successful save
+                setTimeout(() => {
+                    clearForm();
+                }, 1500);
+                
+            } catch (error) {
+                showStatus('Save failed: ' + error.message, 'error');
+            }
+        }
+
+        // Handle copy to clipboard functionality
+        async function handleCopy() {
+            const title = titleInput.value.trim();
+            const author = authorInput.value.trim();
+            const description = descriptionInput.value.trim();
+            
+            if (!title && !author && !description) {
+                showStatus('No content to copy', 'error');
+                return;
+            }
+            
+            try {
+                const content = `Title: ${title}\nAuthor: ${author}\nDescription: ${description}`;
+                
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    await navigator.clipboard.writeText(content);
+                    showStatus('Copied to clipboard!', 'success');
+                } else {
+                    // Fallback for older browsers
+                    const textArea = document.createElement('textarea');
+                    textArea.value = content;
+                    document.body.appendChild(textArea);
+                    textArea.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(textArea);
+                    showStatus('Copied to clipboard!', 'success');
+                }
+                
+            } catch (error) {
+                showStatus('Copy failed. Please try again.', 'error');
+            }
+        }
+
+        // Handle export functionality
+        function handleExport() {
+            try {
+                storage.exportData();
+                showStatus('Data exported successfully!', 'success');
+            } catch (error) {
+                showStatus('Export failed. Please try again.', 'error');
+            }
+        }
+
+        // Handle XML export functionality
+        function handleExportXml() {
+            try {
+                storage.exportXmlData();
+                showStatus('XML data exported successfully!', 'success');
+            } catch (error) {
+                showStatus('XML export failed. Please try again.', 'error');
+            }
+        }
+
+        // Database organization functionality
+        function handleDatabaseSort(sortBy) {
+            try {
+                const entries = storage.getAllEntries();
+                if (entries.length === 0) {
+                    showStatus('No entries to sort', 'info');
+                    return;
+                }
+                
+                let sortedEntries = [...entries];
+                
+                switch (sortBy) {
+                    case 'title':
+                        sortedEntries = storage.sortEntriesAlphabetically(entries);
+                        showStatus('Entries sorted by title (A-Z)', 'success');
+                        break;
+                    case 'author':
+                        sortedEntries.sort((a, b) => a.author.localeCompare(b.author));
+                        showStatus('Entries sorted by author (A-Z)', 'success');
+                        break;
+                    case 'date':
+                        sortedEntries.sort((a, b) => new Date(b.timestamp || 0) - new Date(a.timestamp || 0));
+                        showStatus('Entries sorted by date (newest first)', 'success');
+                        break;
+                }
+                
+                displayDatabaseResults(sortedEntries, `Sorted by ${sortBy}`);
+            } catch (error) {
+                showStatus('Sort failed: ' + error.message, 'error');
+            }
+        }
+
+        function handleShowAllEntries() {
+            try {
+                const entries = storage.getAllEntries();
+                if (entries.length === 0) {
+                    showStatus('No entries in database', 'info');
+                    return;
+                }
+                
+                displayDatabaseResults(entries, 'All entries in database');
+                showStatus(`Showing all ${entries.length} entries`, 'success');
+            } catch (error) {
+                showStatus('Failed to show entries: ' + error.message, 'error');
+            }
+        }
+
+        function displayDatabaseResults(entries, title) {
+            if (!entries || entries.length === 0) {
+                searchResults.innerHTML = '<h3>No entries found</h3>';
+                searchResults.style.display = 'block';
+                return;
+            }
+            
+            resultsList.innerHTML = '';
+            
+            entries.forEach((entry, index) => {
+                const resultItem = document.createElement('div');
+                resultItem.className = 'result-item';
+                
+                const inPrintTray = printTray.find(item => item.id === entry.id);
+                
+                resultItem.innerHTML = `
+                    <div class="result-content" style="flex: 1; cursor: pointer; padding-right: 60px; position: relative;">
+                        <div class="result-title">${escapeHtml(entry.title)}</div>
+                        <div class="result-author">by ${escapeHtml(entry.author)}</div>
+                        <div class="result-preview">${escapeHtml(entry.description.substring(0, 80))}${entry.description.length > 80 ? '...' : ''}</div>
+                        <div style="font-size: 0.7em; color: #999; margin-top: 4px;">
+                            Added: ${entry.timestamp ? new Date(entry.timestamp).toLocaleDateString() : 'Unknown'}
+                        </div>
+                        
+                        <!-- Delete button - top right corner -->
+                        <button class="delete-btn btn btn-clear" onclick="deleteEntry('${entry.id}')" style="position: absolute; top: 0; right: 0; padding: 6px 8px; font-size: 0.8em; margin: 0;" title="Delete entry">🗑️</button>
+                        
+                        <!-- Add to tray button - bottom right corner -->
+                        ${inPrintTray ? 
+                            '<button class="btn btn-clear" style="position: absolute; bottom: 0; right: 0; padding: 4px 6px; font-size: 0.8em; margin: 0;" disabled title="Already in tray">✓</button>' :
+                            `<button class="add-to-tray-btn btn btn-export" onclick="addToPrintTray(${JSON.stringify(entry).replace(/"/g, '&quot;')})" style="position: absolute; bottom: 0; right: 0; padding: 4px 6px; font-size: 0.8em; margin: 0;" title="Add to print tray">📋</button>`
+                        }
+                    </div>
+                `;
+                
+                // Add click handler only to the content area
+                const contentDiv = resultItem.querySelector('.result-content');
+                contentDiv.addEventListener('click', (e) => {
+                    titleInput.value = entry.title;
+                    authorInput.value = entry.author;
+                    descriptionInput.value = entry.description;
+                    searchResults.style.display = 'none';
+                    showStatus(`Loaded "${entry.title}" for editing`, 'success');
+                });
+                
+                resultsList.appendChild(resultItem);
+            });
+            
+            const resultsHeader = searchResults.querySelector('h3');
+            resultsHeader.textContent = `${title} (${entries.length} entries)`;
+            searchResults.style.display = 'block';
+        }
+
+        // HTML-based Word document export - secure and self-contained
+        function handleExportDocx() {
+            try {
+                console.log('Using HTML fallback method');
+                showStatus('Creating HTML document (opens in Word)...', 'info');
+                
+                const entries = storage.getAllEntries();
+                if (entries.length === 0) {
+                    showStatus('No entries to export', 'error');
+                    return;
+                }
+
+                // Sort entries alphabetically using library etiquette
+                const sortedEntries = storage.sortEntriesAlphabetically(entries);
+
+                // Create HTML content that Word can open
+                const htmlContent = `
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Shelf Talker Descriptions</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 1in; }
+        h1 { text-align: center; color: #2E74B5; margin-bottom: 20px; }
+        .date { text-align: center; margin-bottom: 30px; color: #666; }
+        table { width: 100%; border-collapse: collapse; margin-bottom: 30px; }
+        th { background-color: #E7E6E6; font-weight: bold; padding: 12px; border: 2px solid #333; font-size: 14pt; }
+        td { padding: 15px; border: 1px solid #666; vertical-align: top; min-height: 1in; }
+        .title { font-weight: bold; font-size: 13pt; }
+        .author { font-style: italic; font-size: 12pt; }
+        .description { font-size: 11pt; line-height: 1.3; }
+        .instructions { margin-top: 30px; font-size: 12pt; }
+        .instructions h3 { color: #2E74B5; }
+        .instructions li { margin-bottom: 8px; }
+        @media print {
+            body { margin: 0.5in; }
+            @page { size: landscape; }
+        }
+    </style>
+</head>
+<body>
+    <h1>Shelf Talker Descriptions</h1>
+    <div class="date">Generated on ${new Date().toLocaleDateString()}</div>
+    
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 30%;">TITLE</th>
+                <th style="width: 25%;">AUTHOR</th>
+                <th style="width: 45%;">DESCRIPTION</th>
+            </tr>
+        </thead>
+        <tbody>
+            ${sortedEntries.map(entry => `
+                <tr>
+                    <td class="title">${escapeHtml(entry.title)}</td>
+                    <td class="author">${escapeHtml(entry.author)}</td>
+                    <td class="description">${escapeHtml(entry.description)}</td>
+                </tr>
+            `).join('')}
+        </tbody>
+    </table>
+    
+    <div class="instructions">
+        <h3>Printing Instructions:</h3>
+        <ul>
+            <li>This document is optimized for landscape orientation</li>
+            <li>Each row is sized for easy cutting along the table borders</li>
+            <li>Use the borders as cutting guidelines for precise shelf talkers</li>
+            <li>To convert to Word: Open this file in Microsoft Word and save as .docx</li>
+        </ul>
+    </div>
+</body>
+</html>`;
+
+                // Create blob and download
+                const blob = new Blob([htmlContent], { type: 'text/html' });
+                const fileName = `shelf-talker-descriptions-${new Date().toISOString().split('T')[0]}.html`;
+                
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(blob);
+                link.download = fileName;
+                link.click();
+                
+                showStatus(`HTML document exported: ${fileName} (can be opened in Word)`, 'success');
+                console.log('HTML fallback export completed');
+                
+            } catch (error) {
+                console.error('HTML Export error:', error);
+                showStatus('Export failed: ' + error.message, 'error');
+            }
+        }
+
+        // Handle import functionality (JSON and DOCX)
+        function handleImport(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            const fileName = file.name.toLowerCase();
+            
+            if (fileName.endsWith('.json')) {
+                // Handle JSON import
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    try {
+                        console.log('JSON file read, starting import...');
+                        const importedCount = storage.importData(e.target.result);
+                        showStatus(`Successfully imported ${importedCount} new entries from JSON!`, 'success');
+                        searchResults.style.display = 'none';
+                        // Reset file input
+                        event.target.value = '';
+                    } catch (error) {
+                        console.error('JSON import error:', error);
+                        showStatus('JSON import failed: ' + error.message, 'error');
+                        event.target.value = '';
+                    }
+                };
+                reader.readAsText(file);
+                
+            } else if (fileName.endsWith('.xml')) {
+                // Handle XML import
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    try {
+                        const importedCount = storage.importXmlData(e.target.result);
+                        showStatus(`Successfully imported ${importedCount} new entries from XML!`, 'success');
+                        searchResults.style.display = 'none';
+                        // Reset file input
+                        event.target.value = '';
+                    } catch (error) {
+                        showStatus('XML import failed: ' + error.message, 'error');
+                        event.target.value = '';
+                    }
+                };
+                reader.readAsText(file);
+                
+            } else if (fileName.endsWith('.docx')) {
+                // Handle DOCX import
+                handleImportDocx(file);
+                // Reset file input
+                event.target.value = '';
+                
+            } else {
+                showStatus('Please select a .json, .xml, or .docx file', 'error');
+                event.target.value = '';
+            }
+        }
+
+        // Handle .docx import functionality
+        async function handleImportDocx(file) {
+            try {
+                showStatus('Reading Word document...', 'info');
+                
+                // Note: Full DOCX parsing requires additional libraries
+                // For now, we'll show instructions for manual import
+                const message = `DOCX Import Instructions:
+                
+1. Open your Word document
+2. Copy the table contents (Ctrl+A, then Ctrl+C)
+3. Paste into a text editor
+4. Format as: Title|Author|Description (one per line)
+5. Save as .txt file and manually enter data
+                
+Full DOCX parsing will be added in the next update!`;
+                
+                alert(message);
+                showStatus('DOCX import instructions shown - manual entry required for now', 'info');
+                
+            } catch (error) {
+                showStatus('DOCX import failed: ' + error.message, 'error');
+            }
+        }
+
+        // Display search results
+        function displaySearchResults(results) {
+            if (results.length === 0) {
+                searchResults.style.display = 'none';
+                return;
+            }
+            
+            resultsList.innerHTML = '';
+            
+            results.forEach((result, index) => {
+                const resultItem = document.createElement('div');
+                resultItem.className = 'result-item';
+                
+                const inPrintTray = printTray.find(item => item.id === result.id);
+                
+                resultItem.innerHTML = `
+                    <div class="result-content" style="flex: 1; cursor: pointer; padding-right: 60px; position: relative;">
+                        <div class="result-title">${escapeHtml(result.title)}</div>
+                        <div class="result-author">by ${escapeHtml(result.author)}</div>
+                        <div class="result-preview">${escapeHtml(result.description.substring(0, 80))}${result.description.length > 80 ? '...' : ''}</div>
+                        
+                        <!-- Delete button - top right corner -->
+                        <button class="delete-btn btn btn-clear" onclick="deleteEntry('${result.id}')" style="position: absolute; top: 0; right: 0; padding: 6px 8px; font-size: 0.8em; margin: 0;" title="Delete entry">🗑️</button>
+                        
+                        <!-- Add to tray button - bottom right corner -->
+                        ${inPrintTray ? 
+                            '<button class="btn btn-clear" style="position: absolute; bottom: 0; right: 0; padding: 4px 6px; font-size: 0.8em; margin: 0;" disabled title="Already in tray">✓</button>' :
+                            `<button class="add-to-tray-btn btn btn-export" onclick="addToPrintTray(${JSON.stringify(result).replace(/"/g, '&quot;')})" style="position: absolute; bottom: 0; right: 0; padding: 4px 6px; font-size: 0.8em; margin: 0;" title="Add to print tray">📋</button>`
+                        }
+                    </div>
+                `;
+                
+                // Add click handler to populate form with selected result
+                const contentDiv = resultItem.querySelector('.result-content');
+                contentDiv.addEventListener('click', (e) => {
+                    // Don't trigger if button was clicked
+                    if (e.target.tagName === 'BUTTON') return;
+                    
+                    titleInput.value = result.title;
+                    authorInput.value = result.author;
+                    descriptionInput.value = result.description;
+                    searchResults.style.display = 'none';
+                    showStatus('Entry loaded', 'success');
+                });
+                
+                resultsList.appendChild(resultItem);
+            });
+            
+            searchResults.style.display = 'block';
+        }
+
+        // Delete entry function
+        function deleteEntry(id) {
+            if (confirm('Are you sure you want to delete this entry?')) {
+                storage.deleteEntry(id);
+                showStatus('Entry deleted successfully', 'success');
+                // Refresh search results
+                handleSearch();
+            }
+        }
+
+        // Utility functions
+        function showStatus(message, type = 'info') {
+            statusMessage.textContent = message;
+            statusMessage.className = `status-message show ${type}`;
+            
+            // Hide after 3 seconds
+            setTimeout(() => {
+                statusMessage.classList.remove('show');
+            }, 3000);
+        }
+
+        function clearForm() {
+            titleInput.value = '';
+            authorInput.value = '';
+            descriptionInput.value = '';
+            searchResults.style.display = 'none';
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+    </script>
+</body>
+</html>
