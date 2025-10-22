@@ -1,10 +1,10 @@
-# Shelf Talker Utility - Browser Edition v1.4
+# Shelf Talker Utility - Browser Edition v1.6 Enterprise
 
-## 🌐 **Zero-Installation Solution for Retail Environments!**
+## 🌐 **Zero-Installation Enterprise Solution for Retail Environments!**
 
-This is a **browser-compatible version** that runs without any software installation - perfect for corporate environments with restricted software policies. Specifically designed for bookstore and retail staff who need to manage shelf talker descriptions efficiently.
+This is a **browser-compatible enterprise version** that runs without any software installation - perfect for corporate environments with restricted software policies. Specifically designed for bookstore and retail staff who need to manage shelf talker descriptions efficiently with enterprise-grade features.
 
-**🆕 Version 1.4 Enhanced Features:** Duplicate Detection • Alphabetization • XML Support • Database Organization
+**🆕 Version 1.6 Enterprise Features:** Help System • Advanced Developer Tools • Database Management • Security Audit • Corporate Compliance • VIbrid Coding Architecture
 
 ## ✅ **Core Features**
 
@@ -16,13 +16,17 @@ This is a **browser-compatible version** that runs without any software installa
 - **📱 Responsive Design**: Works on desktop, tablet, and mobile devices
 - **🔒 Secure & Offline**: All data stays on the local computer, no network required
 
-## 🆕 **Enhanced v1.4 Features**
+## 🆕 **Enhanced v1.6 Enterprise Features**
 
-- **🛡️ Duplicate Detection**: Prevents duplicate entries with user confirmation dialog
-- **📝 Smart Defaults**: Auto-sets description to "None" when only title/author provided
-- **📚 Library Alphabetization**: Sorts ignoring "The", "A", "An" articles for proper library order
-- **📊 XML Import/Export**: Excel-readable XML format for seamless data exchange
-- **🗂️ Database Organization**: Sort by title, author, date; view all entries with timestamps
+- **� Comprehensive Help System**: Tabbed documentation with Quick Start, Import/Export Guide, Printing Instructions, FAQ, and exportable HTML help
+- **⚙️ Advanced Developer Tools**: Database management, developer console, system diagnostics, and performance monitoring
+- **🗄️ Enterprise Database Management**: Statistics display, integrity validation, database compaction, and partition creation
+- **� Corporate Security Compliance**: Complete audit trail, security documentation, and corporate firewall compatibility
+- **🖨️ Enhanced Print Workflow**: Print tray system with individual copy buttons and optimized layouts
+- **👤 Developer Information Panel**: Contact management and technical specifications
+- **🛡️ Duplicate Detection**: Prevents duplicate entries with user confirmation dialog (inherited from v1.4)
+- **📚 Library Alphabetization**: Sorts ignoring "The", "A", "An" articles for proper library order (inherited from v1.4)
+- **📊 XML Import/Export**: Excel-readable XML format for seamless data exchange (inherited from v1.4)
 
 ## 📄 **Advanced File Features**
 
@@ -187,7 +191,10 @@ Professional table format optimized for shelf talker production:
 
 ## 🆘 **Troubleshooting Guide**
 
-### 💾 **Data Not Saving? (Enhanced v1.4)**
+### 💾 **Data Not Saving? (Enhanced v1.6 Enterprise)**
+- **Use Advanced Features**: Click ⚙️ Advanced Features → 🔍 Run Diagnostics for comprehensive system check
+- **Check Developer Console**: View real-time logging in Advanced Features panel
+- **Database Validation**: Use ✅ Validate Integrity in Advanced Features for data integrity check
 - **Check browser settings**: Ensure cookies/localStorage enabled
 - **Try incognito mode**: Test if extensions are interfering  
 - **Clear browser cache**: Use Ctrl+F5 to force refresh
@@ -273,8 +280,18 @@ Shelf-Talker-Data/
 
 ## 📋 **Quick Start Instructions**
 
+### For v1.6 (Enterprise Edition):
+1. **📁 Download** `Shelf-Talker Utilityv1.6.html` to your computer
+2. **🖱️ Double-click** to open in your browser  
+3. **📝 Start adding** your first book description (title+author required, description optional)
+4. **🔍 Search** to verify it saved correctly
+5. **❓ Click Help & Documentation** for comprehensive usage guides
+6. **⚙️ Access Advanced Features** for database management and developer tools
+7. **🖨️ Use Print Tray** for batch printing workflows
+8. **📊 Export** to JSON, XML, or HTML when ready to print shelf talkers
+
 ### For v1.4 (Enhanced Version):
-1. **📁 Download** `Shelf-Talker Utilityv1.4.html` to your computer
+1. **📁 Download** `Shelf-Talker Utilityv1.4.html` for enhanced features without enterprise tools
 2. **🖱️ Double-click** to open in your browser  
 3. **📝 Start adding** your first book description (title+author required, description optional)
 4. **🔍 Search** to verify it saved correctly
@@ -287,6 +304,38 @@ Shelf-Talker-Data/
 3. **📝 Start adding** your first book description
 4. **🔍 Search** to verify it saved correctly
 5. **📄 Export HTML Doc** when ready to print shelf talkers
-5. **📄 Export Word Doc** when ready to print shelf talkers
 
-**Ready to streamline your shelf talker workflow immediately - no installation, no setup, no hassle!** 🎉
+## 🏢 **v1.6 Enterprise Edition Features**
+
+### 📖 **Help & Documentation System**
+- **Tabbed Interface**: Quick Start, Import/Export, Printing Guide, FAQ, Export Help
+- **Exportable Documentation**: Generate printable HTML help files
+- **Corporate Training**: Step-by-step guides for all enterprise features
+- **Contextual Help**: Location at bottom of interface for workflow integration
+
+### ⚙️ **Advanced Developer Tools**
+- **Database Management**: Statistics, validation, compaction, partition creation
+- **Developer Console**: Real-time logging with export capabilities
+- **System Diagnostics**: Comprehensive health checks and performance monitoring
+- **Author Information**: Contact management and technical specifications
+
+### 🔒 **Enterprise Security & Compliance**
+- **Security Documentation**: Complete audit trail and compliance reporting
+- **Code Organization**: AI-friendly structure mapping for corporate review
+- **Zero Dependencies**: No external connections for maximum security
+- **Corporate Firewall Friendly**: Works in restrictive network environments
+
+### 🗄️ **Advanced Database Features**
+- **Database Statistics**: Entry counts, storage size, top authors analysis
+- **Integrity Validation**: Comprehensive data integrity checking
+- **Database Compaction**: Optimize storage and remove whitespace
+- **Partition Management**: Advanced organization system (gamesave-style)
+- **Danger Zone**: Secure database deletion with enterprise-grade confirmations
+
+### 👤 **Developer Information Panel**
+- **Contact Management**: Store developer/support contact information
+- **Technical Specifications**: VIbrid Coding methodology documentation
+- **Architecture Details**: Single-file, zero-dependency design specifications
+- **Security Model**: Offline-first, localStorage-based architecture
+
+**Ready to streamline your enterprise shelf talker workflow with corporate-grade features - no installation, no setup, no hassle!** 🎉
