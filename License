@@ -1,0 +1,69 @@
+Personal Use Only License (PUOL) — Version 1.0 (And all subsequent decimals thereof)
+Copyright (c) 2025 Charlie Dearing
+All rights reserved.
+
+IMPORTANT — READ CAREFULLY:
+By copying, modifying, or otherwise using this software, you agree to be bound by the terms of this license. If you do not agree, do not use the software.
+
+1. Definitions
+- "Licensor" means the copyright owner (listed above).
+- "You" or "Licensee" means an individual who obtains and uses the licensed material.
+- "Personal Use" means use by a natural person for private, non-commercial purposes including personal study, research, experimentation, learning, or other non-commercial activities not performed on behalf of or for the benefit of a business, governmental, or other organizational entity.
+- "Corporate Use" or "Commercial Use" means any use by (a) a business, corporation, nonprofit, governmental body, partnership, sole proprietorship, or other entity (whether for profit or not); (b) use conducted by employees, agents, contractors, students, or volunteers of such entities; or (c) use that is for the financial benefit of any entity (including internal business operations, product development, services, deployment, or redistribution for fee or for internal commercial advantage).
+- "Source" means the original files included in this distribution.
+
+2. Grant of License
+Subject to the terms below, the Licensor grants You a worldwide, non-exclusive, non-transferable, royalty-free license to use, study, run, and modify the Source for Personal Use only.
+
+3. Prohibited Uses — Corporate / Commercial Use
+All Corporate Use or Commercial Use of the Source or any derivative works based on it is strictly prohibited unless You first obtain express written permission from the Licensor. Corporate/Commercial Use includes, without limitation:
+- Integrating the Source into products, services, or systems used by a business or organization;
+- Deploying the Source on servers, devices, or infrastructure owned, leased, or operated by an entity for non-personal purposes;
+- Using the Source to provide paid or unpaid services to third parties;
+- Distributing, sublicensing, or otherwise transferring the Source to any entity for business use.
+
+4. Distribution & Sharing
+- You may share exact copies of the Source (unmodified) with other individuals for their Personal Use provided you include this license and copyright notice.
+- You may not distribute modified versions, derivatives, or compiled forms of the Source to any entity for Corporate Use without written permission.
+- Any public posting, redistribution, or hosting of the Source (modified or not) that enables Corporate Use is prohibited unless authorized in writing by the Licensor.
+
+5. Reservation of Rights
+All rights not expressly granted by this license are reserved by the Licensor. The Licensor retains ownership of all copyrights and other intellectual property rights in the Source.
+
+6. No Patent License
+This license does not grant any patent rights, whether by implication, estoppel, or otherwise.
+
+7. No Warranty
+THE SOURCE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, NON-INFRINGEMENT, OR ARISING FROM COURSE OF DEALING OR USAGE OF TRADE.
+
+8. Limitation of Liability
+IN NO EVENT WILL THE LICENSOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, CONSEQUENTIAL, OR PUNITIVE DAMAGES, OR FOR ANY LOSS OF PROFITS, REVENUE, DATA, OR DATA USE, ARISING OUT OF OR IN CONNECTION WITH THE SOURCE OR THIS LICENSE, WHETHER IN AN ACTION BASED ON CONTRACT, TORT (INCLUDING NEGLIGENCE), STRICT LIABILITY, OR ANY OTHER THEORY, EVEN IF THE LICENSOR HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
+
+9. Termination
+This license and the rights granted herein will terminate automatically if You fail to comply with any term of this license. Upon termination, You must cease all use of the Source and destroy or return all copies in Your possession or control.
+
+10. Injunctive Relief
+You acknowledge that a breach or threatened breach of this license may cause irreparable harm to the Licensor for which monetary damages would be an inadequate remedy. The Licensor shall be entitled to seek injunctive or other equitable relief to prevent or remedy any such breach, in addition to other remedies available at law or in equity.
+
+11. Remedies and Enforcement
+The Licensor reserves the right to take any lawful action to enforce this license including, but not limited to, cease-and-desist letters, takedown requests, civil action, and seeking injunctive relief.
+
+12. Governing Law & Venue
+This license is governed by the laws of the jurisdiction where the Licensor resides (currently: unspecified). You agree that any legal action related to this license shall be brought in the competent courts located in that jurisdiction. If you want a specific venue, request it in writing from the Licensor.
+
+13. Severability
+If any provision of this license is held to be invalid or unenforceable, the remaining provisions will continue in full force and effect.
+
+14. No Transfer or Sublicense
+You may not assign, transfer, sublicense, or otherwise convey this license or any rights granted hereunder to any third party without the Licensor's prior written consent.
+
+15. Contact for Permission
+To request permission for Corporate or Commercial Use, contact the Licensor in writing at: replace-with-your-email-or-contact-method (e.g., Strangelyodd on GitHub: https://github.com/Strangelyodd). Permission, if granted, will be provided in writing and may be subject to terms, fees, or a separate license agreement.
+
+16. Notices
+All notices to the Licensor should be sent to the contact listed above. Notices from the Licensor to You may be made via repository notices, email, or other reasonable means.
+
+17. Effective Date
+This license is effective as of the date You first use the Source.
+
+END OF LICENSE
