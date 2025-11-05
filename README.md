@@ -120,7 +120,7 @@ This is a **browser-compatible enterprise version** that runs without any softwa
 ## 🔧 **Deployment Options**
 
 ### 💼 **Corporate/Retail Environments**
-1. **📧 Email Distribution**: Send `Shelf-Talker Utilityv1.4.html` file via email to staff
+1. **📧 Email Distribution**: Send `Shelf-Talker Utilityv1.6.html` file via email to staff
 2. **🌐 Intranet Hosting**: Place on internal web server for company-wide access
 3. **📁 Network Drive**: Put on shared folder for team access and collaboration
 4. **💾 USB Distribution**: Copy to USB drives for offline workstation use
@@ -291,7 +291,7 @@ Shelf-Talker-Data/
 8. **📊 Export** to JSON, XML, or HTML when ready to print shelf talkers
 
 ### For v1.4 (Enhanced Version):
-1. **📁 Download** `Shelf-Talker Utilityv1.4.html` for enhanced features without enterprise tools
+1. **📁 Download** `older-versions/Shelf-Talker Utilityv1.4.html` for enhanced features without enterprise tools
 2. **🖱️ Double-click** to open in your browser  
 3. **📝 Start adding** your first book description (title+author required, description optional)
 4. **🔍 Search** to verify it saved correctly
@@ -299,7 +299,7 @@ Shelf-Talker-Data/
 6. **📊 Export** to JSON, XML, or HTML when ready to print shelf talkers
 
 ### For v1.2 (Original Version):
-1. **📁 Download** `Shelf-Talker Utilityv1.2.html` for the stable baseline version
+1. **📁 Download** `older-versions/Shelf-Talker Utilityv1.2.html` for the stable baseline version
 2. **🖱️ Double-click** to open in your browser  
 3. **📝 Start adding** your first book description
 4. **🔍 Search** to verify it saved correctly
